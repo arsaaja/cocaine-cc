@@ -26,7 +26,7 @@
             <a class="nav-link" href="/"><i class="bi bi-grid-1x2-fill me-2"></i> Dashboard</a>
             <a class="nav-link active" href="/riwayat"><i class="bi bi-clock-history me-2"></i> Riwayat</a>
             <a class="nav-link" href="/lokasi"><i class="bi bi-geo-alt-fill me-2"></i> Lokasi Alat</a>
-            <a class="nav-link" href="#"><i class="bi bi-gear-fill me-2"></i> Pengaturan</a>
+            <a class="nav-link" href="/pengaturan"><i class="bi bi-gear-fill me-2"></i> Pengaturan</a>
         </nav>
     </div>
 
