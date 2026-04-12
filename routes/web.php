@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\ActivityLog;
 use App\Models\Device;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Route;
 
 class LogApiRequest
 {
@@ -34,3 +35,17 @@ class LogApiRequest
         return $response;
     }
 }
+
+// halaman utama (view monitoring)
+Route::get('/', function () {
+    return view('dashboard'); 
+});
+
+// Halaman baru untuk riwayat
+Route::get('/riwayat', function () {
+    return view('riwayat');
+});
+
+Route::get('/lokasi', function () {
+    return view('lokasi');
+});
