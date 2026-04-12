@@ -131,6 +131,45 @@
             .sidebar { display: none; }
             .main-content { margin-left: 0; }
         }
+
+
+        /* Jam Dashboard Premium */
+#header-clock {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: linear-gradient(135deg, #ffffff, #f1f3f5);
+    padding: 10px 16px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+    min-width: 220px;
+}
+
+#header-clock .clock-date {
+    font-size: 13px;
+    color: #6c757d;
+}
+
+#header-clock .clock-time {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0d6efd; 
+    letter-spacing: 1px;
+}
+
+
+/* Efek hover jam */
+#header-clock {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+#header-clock:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 10px 25px rgba(13,110,253,0.25);
+    border-color: rgba(13,110,253,0.3);
+}
+
+
     </style>
 </head>
 
@@ -267,13 +306,47 @@
     </div>
 
     <script>
+
+        /*
         // Logika Jam Header
         function updateClock() {
             const now = new Date();
             document.getElementById('header-clock').innerText = now.toLocaleString('id-ID', { 
                 weekday: 'long', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' 
             });
-        }
+        } */
+
+        function updateClock() {
+    const now = new Date();
+
+    const hari = now.toLocaleDateString('id-ID', { weekday: 'long' });
+    const tanggal = now.toLocaleDateString('id-ID', { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric' 
+    });
+
+    const jam = now.toLocaleTimeString('id-ID', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit' 
+    });
+
+    document.getElementById('header-clock').innerHTML = `
+        <div style="line-height: 1.2;">
+            <div class="clock-date">${hari}, ${tanggal}</div>
+            <div class="clock-time">${jam}</div>
+        </div>
+    `;
+}
+        
+
+
+
+
+
+
+
         setInterval(updateClock, 1000);
 
         // Pertahankan fungsi fetch & logic dari file asli Anda
