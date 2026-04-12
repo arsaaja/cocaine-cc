@@ -1,36 +1,29 @@
 <?php
 
-namespace App\Http\Middleware;
+use Illuminate\Support\Facades\Route;
 
-use Closure;
-use Illuminate\Http\Request;
-use App\Models\ActivityLog;
-use App\Models\Device;
-use Symfony\Component\HttpFoundation\Response;
+/*
+|--------------------------------------------------------------------------
+| Web Routes - Tampilan Dashboard COCAINE
+|--------------------------------------------------------------------------
+*/
 
-class LogApiRequest
-{
-    /**
-     * Handle an incoming request.
-     */
-    public function handle(Request $request, Closure $next): Response
-    {
-        // Jalankan request-nya dulu (Post-Middleware)
-        $response = $next($request);
+// Halaman Utama (Monitoring Real-time)
+Route::get('/', function () {
+    return view('dashboard');
+});
 
-        // Hanya log request yang memiliki api_key (filter untuk IoT/API)
-        if ($request->has('api_key')) {
-            $device = Device::where('api_key', $request->api_key)->first();
+// Halaman Riwayat Transaksi
+Route::get('/riwayat', function () {
+    return view('riwayat');
+});
 
-            ActivityLog::create([
-                'device_id' => $device ? $device->id : null,
-                'action' => $request->method() . ' ' . $request->path(),
-                'description' => "Status: " . $response->getStatusCode() . " | IP: " . $request->ip(),
-                // Opsional: Jika ingin simpan payload, pastikan di-json_encode
-                // 'payload'  => json_encode($request->except(['api_key', 'password'])),
-            ]);
-        }
+// Halaman Lokasi Alat (Maps)
+Route::get('/lokasi', function () {
+    return view('lokasi');
+});
 
-        return $response;
-    }
-}
+// Halaman Pengaturan
+Route::get('/pengaturan', function () {
+    return view('pengaturan');
+});

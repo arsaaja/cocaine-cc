@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COCAINE - Dashboard Celengan Pintar</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -47,15 +48,16 @@
         }
 
         .nav-link {
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             padding: 12px 15px;
             border-radius: 10px;
             margin-bottom: 5px;
             transition: all 0.3s;
         }
 
-        .nav-link:hover, .nav-link.active {
-            background: rgba(255,255,255,0.1);
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
             color: white;
         }
 
@@ -63,7 +65,7 @@
         .card {
             border: none;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease;
         }
 
@@ -90,12 +92,19 @@
             height: 28px;
         }
 
-        .switch input { opacity: 0; width: 0; height: 0; }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
         .slider {
             position: absolute;
             cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: #cbd5e0;
             transition: .4s;
             border-radius: 34px;
@@ -104,15 +113,22 @@
         .slider:before {
             position: absolute;
             content: "";
-            height: 20px; width: 20px;
-            left: 4px; bottom: 4px;
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
             background-color: white;
             transition: .4s;
             border-radius: 50%;
         }
 
-        input:checked + .slider { background-color: #2ecc71; }
-        input:checked + .slider:before { transform: translateX(22px); }
+        input:checked+.slider {
+            background-color: #2ecc71;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(22px);
+        }
 
         .status-badge {
             padding: 5px 12px;
@@ -128,48 +144,51 @@
         }
 
         @media (max-width: 992px) {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; }
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
         }
 
 
         /* Jam Dashboard Premium */
-#header-clock {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: linear-gradient(135deg, #ffffff, #f1f3f5);
-    padding: 10px 16px;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    border: 1px solid rgba(0,0,0,0.05);
-    min-width: 220px;
-}
+        #header-clock {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #ffffff, #f1f3f5);
+            padding: 10px 16px;
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            min-width: 220px;
+        }
 
-#header-clock .clock-date {
-    font-size: 13px;
-    color: #6c757d;
-}
+        #header-clock .clock-date {
+            font-size: 13px;
+            color: #6c757d;
+        }
 
-#header-clock .clock-time {
-    font-size: 22px;
-    font-weight: 700;
-    color: #0d6efd; 
-    letter-spacing: 1px;
-}
-
-
-/* Efek hover jam */
-#header-clock {
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-#header-clock:hover {
-    transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 10px 25px rgba(13,110,253,0.25);
-    border-color: rgba(13,110,253,0.3);
-}
+        #header-clock .clock-time {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0d6efd;
+            letter-spacing: 1px;
+        }
 
 
+        /* Efek hover jam */
+        #header-clock {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        #header-clock:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 10px 25px rgba(13, 110, 253, 0.25);
+            border-color: rgba(13, 110, 253, 0.3);
+        }
     </style>
 </head>
 
@@ -219,7 +238,8 @@
                         <i class="bi bi-coin"></i>
                     </div>
                     <small class="text-muted d-block">Koin Terdeteksi</small>
-                    <h4 class="fw-bold mb-0"><span id="val-koin">0</span> <small class="fs-6 fw-normal">unit</small></h4>
+                    <h4 class="fw-bold mb-0"><span id="val-koin">0</span> <small class="fs-6 fw-normal">unit</small>
+                    </h4>
                 </div>
             </div>
             <div class="col-md-3">
@@ -228,7 +248,8 @@
                         <i class="bi bi-cash-stack"></i>
                     </div>
                     <small class="text-muted d-block">Uang Kertas</small>
-                    <h4 class="fw-bold mb-0"><span id="val-kertas">0</span> <small class="fs-6 fw-normal">lembar</small></h4>
+                    <h4 class="fw-bold mb-0"><span id="val-kertas">0</span> <small class="fs-6 fw-normal">lembar</small>
+                    </h4>
                 </div>
             </div>
             <div class="col-md-3">
@@ -267,7 +288,8 @@
                             <small id="prog-text" class="text-primary fw-bold">0%</small>
                         </div>
                         <div class="progress" style="height: 10px;">
-                            <div id="prog-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                            <div id="prog-bar" class="progress-bar progress-bar-striped progress-bar-animated"
+                                role="progressbar" style="width: 0%"></div>
                         </div>
                     </div>
                     <div class="p-3 border rounded-4">
@@ -282,8 +304,10 @@
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
                 <h5 class="fw-bold mb-0">Log Aktivitas Terbaru</h5>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-light border" onclick="exportExcel()"><i class="bi bi-file-earmark-excel me-1"></i> Excel</button>
-                    <button class="btn btn-sm btn-dark" onclick="window.print()"><i class="bi bi-printer me-1"></i> Cetak</button>
+                    <button class="btn btn-sm btn-light border" onclick="exportExcel()"><i
+                            class="bi bi-file-earmark-excel me-1"></i> Excel</button>
+                    <button class="btn btn-sm btn-dark" onclick="window.print()"><i class="bi bi-printer me-1"></i>
+                        Cetak</button>
                 </div>
             </div>
             <div class="table-responsive">
@@ -298,7 +322,9 @@
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        <tr><td colspan="5" class="text-center py-4">Memuat data transaksi...</td></tr>
+                        <tr>
+                            <td colspan="5" class="text-center py-4">Memuat data transaksi...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -317,29 +343,29 @@
         } */
 
         function updateClock() {
-    const now = new Date();
+            const now = new Date();
 
-    const hari = now.toLocaleDateString('id-ID', { weekday: 'long' });
-    const tanggal = now.toLocaleDateString('id-ID', { 
-        day: 'numeric', 
-        month: 'long', 
-        year: 'numeric' 
-    });
+            const hari = now.toLocaleDateString('id-ID', { weekday: 'long' });
+            const tanggal = now.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
 
-    const jam = now.toLocaleTimeString('id-ID', { 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit' 
-    });
+            const jam = now.toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
 
-    document.getElementById('header-clock').innerHTML = `
+            document.getElementById('header-clock').innerHTML = `
         <div style="line-height: 1.2;">
             <div class="clock-date">${hari}, ${tanggal}</div>
             <div class="clock-time">${jam}</div>
         </div>
     `;
-}
-        
+        }
+
 
 
 
@@ -373,7 +399,7 @@
                     txt.className = d.solenoid_status == 1 ? "small fw-bold text-success" : "small fw-bold text-danger";
 
                     document.getElementById('last-update').innerText = 'Sinkronisasi: ' + new Date().toLocaleTimeString('id-ID');
-                }).catch(err => {});
+                }).catch(err => { });
         }
 
         // Inisialisasi Chart dengan Style Baru
@@ -407,7 +433,7 @@
         });
 
         // Event listener toggle solenoid sama seperti sebelumnya
-        document.getElementById('btn-solenoid').onchange = function() {
+        document.getElementById('btn-solenoid').onchange = function () {
             // Logika fetch POST Anda di sini
         };
 
@@ -415,4 +441,5 @@
         updateClock();
     </script>
 </body>
+
 </html>
