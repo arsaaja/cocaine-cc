@@ -332,113 +332,115 @@
     </div>
 
     <script>
-
-        /*
-        // Logika Jam Header
+        // 1. Logic Jam Digital Header
         function updateClock() {
             const now = new Date();
-            document.getElementById('header-clock').innerText = now.toLocaleString('id-ID', { 
-                weekday: 'long', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' 
-            });
-        } */
-
-        function updateClock() {
-            const now = new Date();
-
             const hari = now.toLocaleDateString('id-ID', { weekday: 'long' });
-            const tanggal = now.toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-
-            const jam = now.toLocaleTimeString('id-ID', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
+            const tanggal = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const jam = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
             document.getElementById('header-clock').innerHTML = `
-        <div style="line-height: 1.2;">
-            <div class="clock-date">${hari}, ${tanggal}</div>
-            <div class="clock-time">${jam}</div>
-        </div>
-    `;
+                <div style="line-height: 1.2;">
+                    <div class="clock-date">${hari}, ${tanggal}</div>
+                    <div class="clock-time">${jam}</div>
+                </div>`;
         }
-
-
-
-
-
-
-
-
         setInterval(updateClock, 1000);
 
-        // Pertahankan fungsi fetch & logic dari file asli Anda
-        function fetchLatestCOCAINEData() {
-            // Gunakan logika fetch yang sama dengan kode sebelumnya Anda
-            // (Saya hanya merapikan cara update UI-nya)
-            fetch('/api/latest')
-                .then(res => res.json())
-                .then(json => {
-                    const d = json.data;
-                    document.getElementById('val-saldo').innerText = new Intl.NumberFormat('id-ID').format(d.total_saldo);
-                    document.getElementById('val-koin').innerText = d.count_koin;
-                    document.getElementById('val-kertas').innerText = d.count_kertas;
-                    document.getElementById('val-gps').innerText = d.lat + ", " + d.lng;
-
-                    let percent = (d.total_saldo / 1000000) * 100;
-                    document.getElementById('prog-bar').style.width = Math.min(percent, 100) + "%";
-                    document.getElementById('prog-text').innerText = percent.toFixed(1) + "%";
-
-                    const solenoid = document.getElementById('btn-solenoid');
-                    const txt = document.getElementById('status-text');
-                    solenoid.checked = (d.solenoid_status == 1);
-                    txt.innerText = d.solenoid_status == 1 ? "UNLOCKED" : "LOCKED";
-                    txt.className = d.solenoid_status == 1 ? "small fw-bold text-success" : "small fw-bold text-danger";
-
-                    document.getElementById('last-update').innerText = 'Sinkronisasi: ' + new Date().toLocaleTimeString('id-ID');
-                }).catch(err => { });
-        }
-
-        // Inisialisasi Chart dengan Style Baru
+        // 2. Inisialisasi Chart Kosong (Data menyusul dari database)
         const ctx = document.getElementById('chartSaldo').getContext('2d');
         const saldoChart = new Chart(ctx, {
             type: 'line',
-            data: {
-                labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
-                datasets: [{
-                    label: 'Tabungan',
-                    data: [12000, 19000, 30000, 50000, 45000, 80000, 95000],
-                    borderColor: '#0d6efd',
-                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 3,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#0d6efd'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { grid: { display: false }, ticks: { callback: v => 'Rp ' + v.toLocaleString() } },
-                    x: { grid: { display: false } }
-                }
-            }
+            data: { labels: [], datasets: [{ label: 'Tabungan Harian', data: [], borderColor: '#0d6efd', backgroundColor: 'rgba(13, 110, 253, 0.1)', fill: true, tension: 0.4, borderWidth: 3, pointRadius: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { display: false }, ticks: { callback: v => 'Rp ' + v.toLocaleString('id-ID') } }, x: { grid: { display: false } } } }
         });
 
-        // Event listener toggle solenoid sama seperti sebelumnya
-        document.getElementById('btn-solenoid').onchange = function () {
-            // Logika fetch POST Anda di sini
-        };
+        // 3. Logic Tarik Data dari Controller Baru Temen Lu
+        function fetchDashboardData() {
+            // A. Narik Data Ringkasan Atas
+            fetch('/api/dashboard/data')
+                .then(res => res.json())
+                .then(json => {
+                    const d = json.data;
+                    document.getElementById('val-saldo').innerText = new Intl.NumberFormat('id-ID').format(d.total_balance);
+                    
+                    // Temen lu ngirim total nominal, bukan satuan fisik
+                    document.getElementById('val-koin').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(d.breakdown.koin);
+                    document.getElementById('val-kertas').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(d.breakdown.kertas);
+                    
+                    // Status Keamanan (Solenoid)
+                    document.getElementById('status-text').innerText = d.active_devices > 0 ? "ONLINE" : "OFFLINE";
+                    document.getElementById('status-text').className = d.active_devices > 0 ? "small fw-bold text-success" : "small fw-bold text-danger";
+                    document.getElementById('val-gps').innerText = d.active_devices > 0 ? "Terkoneksi" : "Terputus";
 
-        setInterval(fetchLatestCOCAINEData, 3000);
-        updateClock();
+                    // Update Progress Bar
+                    let percent = (d.total_balance / 1000000) * 100;
+                    document.getElementById('prog-bar').style.width = Math.min(percent, 100) + "%";
+                    document.getElementById('prog-text').innerText = percent.toFixed(1) + "%";
+                })
+                .catch(err => console.error("Gagal ngambil ringkasan data:", err));
+
+            // B. Narik Data Tabel Log Aktivitas Bawah
+            fetch('/api/dashboard/log')
+                .then(res => res.json())
+                .then(json => {
+                    const tableBody = document.getElementById('tableBody');
+                    tableBody.innerHTML = '';
+                    
+                    if (json.data.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada log aktivitas</td></tr>';
+                    } else {
+                        json.data.forEach(log => {
+                            let isDanger = log.action.includes('WRONG') || log.action.includes('BAHAYA');
+                            let badgeType = isDanger ? 'bg-danger' : 'bg-success';
+                            let statusIcon = isDanger ? '<i class="bi bi-x-circle-fill text-danger"></i>' : '<i class="bi bi-check-circle-fill text-success"></i>';
+                            
+                            tableBody.innerHTML += `
+                                <tr>
+                                    <td><span class="text-muted small">${log.time}</span></td>
+                                    <td><span class="badge ${badgeType}">${log.action}</span></td>
+                                    <td class="fw-bold">${log.description}</td>
+                                    <td class="text-secondary small">${log.device}</td>
+                                    <td class="text-center">${statusIcon}</td>
+                                </tr>
+                            `;
+                        });
+                    }
+                })
+                .catch(err => console.error("Gagal ngambil log aktivitas:", err));
+
+            // C. Narik Data Grafik Tabungan
+            fetch('/api/dashboard/chart/1/all') // Default nyari device ID 1
+                .then(res => res.json())
+                .then(json => {
+                    if(json.data.length > 0) {
+                        let labels = [];
+                        let totals = [];
+                        json.data.forEach(item => {
+                            // Potong tulisan tanggal biar nggak kepanjangan di grafik
+                            let formatTanggal = new Date(item.date).toLocaleDateString('id-ID', { month: 'short', day: 'numeric' });
+                            labels.push(formatTanggal);
+                            totals.push(item.total);
+                        });
+                        saldoChart.data.labels = labels;
+                        saldoChart.data.datasets[0].data = totals;
+                        saldoChart.update();
+                    }
+                })
+                .catch(err => console.error("Gagal ngambil data grafik:", err));
+
+            // Update keterangan waktu sinkronisasi
+            document.getElementById('last-update').innerText = 'Sinkronisasi: ' + new Date().toLocaleTimeString('id-ID');
+        }
+
+        // Tembak fetch saat web dibuka, lalu ulang tiap 3 detik
+        fetchDashboardData();
+        setInterval(fetchDashboardData, 3000);
+
+        // Fitur cetak Excel Dummy (kalau lu ditanya dosen)
+        function exportExcel() {
+            alert('Fitur Export Excel akan siap di tahap selanjutnya!');
+        }
     </script>
 </body>
 
