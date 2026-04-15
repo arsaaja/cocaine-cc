@@ -160,10 +160,9 @@
             COCAINE
         </a>
         <nav class="nav flex-column">
-            <a class="nav-link" href="/"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            <a class="nav-link" href="/dashboard"><i class="bi bi-grid-1x2"></i> Dashboard</a>
             <a class="nav-link" href="/riwayat"><i class="bi bi-clock-history"></i> Riwayat</a>
-            <a class="nav-link active" href="#"><i class="bi bi-geo-alt-fill"></i> Lokasi Alat</a>
-            <a class="nav-link" href="/pengaturan"><i class="bi bi-gear"></i> Pengaturan</a>
+            <a class="nav-link active" href="/lokasi"><i class="bi bi-geo-alt-fill"></i> Lokasi Alat</a>
         </nav>
     </div>
 
