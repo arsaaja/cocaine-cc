@@ -134,6 +134,10 @@
         .bg-primary-subtle { background-color: rgba(40, 90, 72, 0.3) !important; color: var(--accent-color) !important; }
         .text-muted { color: rgba(255,255,255,0.5) !important; }
 
+        #txt-status-alat {
+            transition: color 0.3s ease; /* Tambahkan ini agar perubahan warna smooth */
+        }
+
         .switch { position: relative; display: inline-block; width: 45px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
@@ -321,6 +325,20 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let config = { targetAmount: null, targetTitle: "", currentBalance: 0 };
+
+        document.getElementById('check-solenoid').addEventListener('change', function() {
+            const statusText = document.getElementById('txt-status-alat');
+    
+            if (this.checked) {
+            // Jika toggle ON (Terkunci)
+            statusText.innerText = 'LOCKED';
+            statusText.style.color = 'var(--accent-color)'; // Warna hijau aksen
+            } else {
+            // Jika toggle OFF (Terbuka)
+            statusText.innerText = 'UNLOCKED';
+            statusText.style.color = '#ff4757'; // Warna merah
+            }
+        });
 
         function runClock() {
             const now = new Date();

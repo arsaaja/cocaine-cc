@@ -6,6 +6,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         :root {
             --sidebar-width: 260px;
@@ -84,6 +87,17 @@
             padding: 15px !important;
         }
 
+        .row-archived {
+            opacity: 0.6;
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+    
+        .badge-archive {
+            background: rgba(176, 228, 204, 0.1);
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
         .text-primary {
             color: var(--accent-color) !important;
         }
@@ -103,7 +117,12 @@
     </div>
 
     <div class="main-content">
-        <h4 class="fw-bold mb-4">Riwayat Aktivitas Celengan</h4>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-4">Riwayat Aktivitas Celengan</h4>
+                <button class="btn btn-danger rounded-3 px-4" onclick="handleResetSaldo()">
+                    <i class="bi bi-arrow-counterclockwise me-2"></i> Reset & Arsip Saldo
+                </button>
+            </div>    
         
         <div class="card p-4">
             <div class="table-responsive">
@@ -127,9 +146,67 @@
     </div>
 
     <script>
+        function handleResetSaldo() {
+            Swal.fire({
+                title: 'Konfirmasi Reset',
+                text: "Semua riwayat saat ini akan diarsipkan dan saldo akan kembali ke nol. Lanjutkan?",
+                icon: 'warning',
+                showCancelButton: true,
+                background: '#121f1d', // Warna var(--card-bg)
+                color: '#ffffff',
+                confirmButtonColor: '#ff4757', // Warna merah untuk aksi hapus/reset
+                cancelButtonColor: '#408A71',  // Warna var(--secondary-color)
+                confirmButtonText: 'Ya, Reset & Arsip!',
+                cancelButtonText: 'Batal',
+                borderRadius: '16px'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Tampilkan loading saat proses fetch
+                    Swal.fire({
+                        title: 'Memproses...',
+                        allowOutsideClick: false,
+                        background: '#121f1d',
+                        color: '#ffffff',
+                        didOpen: () => { Swal.showLoading(); }
+                    });
+
+                    fetch('/api/saldo/reset', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Saldo telah di-reset dan riwayat lama berhasil diarsipkan.',
+                            icon: 'success',
+                            background: '#121f1d',
+                            color: '#ffffff',
+                            confirmButtonColor: '#285A48'
+                        }).then(() => {
+                            location.reload(); 
+                        });
+                    })
+                    .catch(err => {
+                        console.error("Gagal reset:", err);
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan sistem saat mencoba mereset saldo.',
+                            icon: 'error',
+                            background: '#121f1d',
+                            color: '#ffffff',
+                            confirmButtonColor: '#285A48'
+                        });
+                    });
+                }
+            });
+        }
         // Fungsi aslinya tetap dipertahankan
         function loadRiwayat() {
-            console.log("Memuat data riwayat...");
+            const tbody = document.getElementById('riwayatTable');
         }
         loadRiwayat();
     </script>
