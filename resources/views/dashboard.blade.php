@@ -16,14 +16,18 @@
     <style>
         :root {
             --sidebar-width: 260px;
-            --primary-color: #0d6efd;
-            --bg-body: #f8f9fa;
+            --primary-color: #285A48;
+            --secondary-color: #408A71;
+            --accent-color: #B0E4CC;
+            --dark-bg: #091413;
+            --bg-body: #091413;
+            --card-bg: #121f1d;
         }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-body);
-            color: #2d3436;
+            color: #ffffff;
         }
 
         /* Sidebar Styling */
@@ -33,10 +37,11 @@
             position: fixed;
             left: 0;
             top: 0;
-            background: #1e272e;
+            background: #050a09; /* Lebih gelap dari body */
             color: white;
             padding: 20px;
             z-index: 1000;
+            border-right: 1px solid rgba(255,255,255,0.05);
         }
 
         .main-content {
@@ -45,7 +50,7 @@
         }
 
         .nav-link {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.6);
             padding: 12px 15px;
             border-radius: 10px;
             margin-bottom: 5px;
@@ -53,7 +58,7 @@
         }
 
         .nav-link:hover, .nav-link.active {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--primary-color);
             color: white;
         }
 
@@ -66,58 +71,85 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            background-color: var(--primary-color) !important;
         }
 
         .target-box:hover {
-            background-color: #0b5ed7 !important;
+            background-color: var(--secondary-color) !important;
             transform: translateY(-5px);
         }
 
         /* Header Components */
         #header-clock {
-            background: white;
+            background: var(--card-bg);
             padding: 10px 20px;
             border-radius: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
             text-align: right;
         }
 
-        .clock-time { font-size: 20px; font-weight: 700; color: #0d6efd; }
-        .clock-date { font-size: 12px; color: #6c757d; }
+        .clock-time { font-size: 20px; font-weight: 700; color: var(--accent-color); }
+        .clock-date { font-size: 12px; color: rgba(255,255,255,0.6); }
 
         .profile-card {
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid #eee;
+            background-color: var(--card-bg) !important;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
         }
-        .profile-card:hover { background-color: #f1f1f1 !important; }
+        .profile-card:hover { background-color: var(--primary-color) !important; }
         
+        .dropdown-menu {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
         .dropdown-item {
+            color: white;
             font-size: 14px;
             border-radius: 8px;
             margin: 0 8px;
             width: calc(100% - 16px);
         }
+        .dropdown-item:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .dropdown-header { color: var(--accent-color); }
+        .dropdown-divider { border-top: 1px solid rgba(255,255,255,0.1); }
 
-        .card { border: none; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
+        .card { 
+            background-color: var(--card-bg); 
+            border: 1px solid rgba(255,255,255,0.05); 
+            border-radius: 16px; 
+            color: white;
+        }
+
         .stat-icon {
             width: 48px; height: 48px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
             font-size: 1.5rem; margin-bottom: 15px;
         }
 
+        .bg-primary-subtle { background-color: rgba(40, 90, 72, 0.3) !important; color: var(--accent-color) !important; }
+        .text-muted { color: rgba(255,255,255,0.5) !important; }
+
         .switch { position: relative; display: inline-block; width: 45px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
             position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc; transition: .4s; border-radius: 34px;
+            background-color: #333; transition: .4s; border-radius: 34px;
         }
         .slider:before {
             position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
             background-color: white; transition: .4s; border-radius: 50%;
         }
-        input:checked + .slider { background-color: #2ecc71; }
+        input:checked + .slider { background-color: var(--secondary-color); }
         input:checked + .slider:before { transform: translateX(21px); }
+
+        .progress { background-color: rgba(255,255,255,0.1); }
+        .progress-bar { background-color: var(--secondary-color); }
+        .bg-light { background-color: rgba(255,255,255,0.05) !important; }
     </style>
 </head>
 
@@ -125,7 +157,7 @@
 
     <div class="sidebar d-flex flex-column">
         <div class="d-flex align-items-center mb-4 px-2">
-            <i class="bi bi-safe2-fill text-primary fs-3 me-2"></i>
+            <i class="bi bi-safe2-fill fs-3 me-2" style="color: var(--accent-color);"></i>
             <h4 class="fw-bold mb-0">COCAINE</h4>
         </div>
         <nav class="nav flex-column mb-auto">
@@ -135,7 +167,7 @@
         </nav>
 
         <div class="px-2 pb-4">
-            <div class="p-3 bg-primary rounded-4 text-center target-box shadow-sm" onclick="openTargetModal()">
+            <div class="p-3 rounded-4 text-center target-box shadow-sm" onclick="openTargetModal()">
                 <div id="target-display-active" style="display: none;">
                     <small class="d-block mb-2 text-white-50" id="sidebar-target-title">Target Tabungan</small>
                     <h6 class="fw-bold mb-1 text-white" id="sidebar-target-text">Rp 0</h6>
@@ -157,8 +189,8 @@
             
             <div class="d-flex align-items-center gap-3">
                 <div class="dropdown">
-                    <div class="d-flex align-items-center gap-2 p-2 bg-white rounded-4 shadow-sm profile-card" data-bs-toggle="dropdown">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                    <div class="d-flex align-items-center gap-2 p-2 rounded-4 shadow-sm profile-card" data-bs-toggle="dropdown">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background-color: var(--primary-color) !important;">
                             <i class="bi bi-person-fill"></i>
                         </div>
                         <div class="me-2 d-none d-md-block">
@@ -192,35 +224,35 @@
         <div class="row g-4 mb-4">
             <div class="col-md-3">
                 <div class="card p-3">
-                    <div class="stat-icon bg-primary-subtle text-primary"><i class="bi bi-wallet2"></i></div>
+                    <div class="stat-icon bg-primary-subtle"><i class="bi bi-wallet2"></i></div>
                     <small class="text-muted">Total Saldo</small>
                     <h4 class="fw-bold mb-0">Rp <span id="val-saldo">0</span></h4>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card p-3">
-                    <div class="stat-icon bg-success-subtle text-success"><i class="bi bi-coin"></i></div>
+                    <div class="stat-icon" style="background-color: var(--accent-color); color: var(--primary-color);"><i class="bi bi-coin"></i></div>
                     <small class="text-muted">Koin</small>
                     <h4 class="fw-bold mb-0">Rp <span id="val-koin">0</span></h4>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card p-3">
-                    <div class="stat-icon bg-warning-subtle text-warning"><i class="bi bi-cash-stack"></i></div>
+                    <div class="stat-icon" style="background-color: rgba(255,255,255,0.1); color: white;"><i class="bi bi-cash-stack"></i></div>
                     <small class="text-muted">Uang Kertas</small>
                     <h4 class="fw-bold mb-0">Rp <span id="val-kertas">0</span></h4>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card p-3">
-                    <div class="stat-icon bg-info-subtle text-info"><i class="bi bi-shield-lock"></i></div>
+                    <div class="stat-icon" style="background-color: var(--accent-color); color: var(--primary-color);"><i class="bi bi-shield-lock"></i></div>
                     <small class="text-muted">Keamanan</small>
                     <div class="d-flex align-items-center gap-2 mt-1">
                         <label class="switch">
                             <input type="checkbox" id="check-solenoid" checked>
                             <span class="slider"></span>
                         </label>
-                        <span id="txt-status-alat" class="small fw-bold text-success">LOCKED</span>
+                        <span id="txt-status-alat" class="small fw-bold" style="color: var(--accent-color);">LOCKED</span>
                     </div>
                 </div>
             </div>
@@ -237,23 +269,23 @@
                 <div class="card p-4 h-100">
                     <h5 class="fw-bold mb-3">Monitoring Target</h5>
                     <div id="monitor-target-active" style="display: none;">
-                        <div class="p-3 bg-light rounded-4 mb-3 border">
+                        <div class="p-3 bg-light rounded-4 mb-3 border border-secondary">
                             <div class="d-flex justify-content-between mb-2">
                                 <small class="fw-bold" id="prog-label">Progres Capaian</small>
-                                <small id="prog-percent" class="text-primary fw-bold">0%</small>
+                                <small class="fw-bold" id="prog-percent" style="color: var(--accent-color);">0%</small>
                             </div>
                             <div class="progress" style="height: 12px; border-radius: 10px;">
                                 <div id="prog-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
                             </div>
                         </div>
                     </div>
-                    <div id="monitor-target-empty" class="text-center py-4 border rounded-4 bg-light mb-3">
+                    <div id="monitor-target-empty" class="text-center py-4 border border-secondary rounded-4 bg-light mb-3">
                         <i class="bi bi-plus-circle text-muted fs-2"></i>
                         <p class="text-muted small mt-2">Belum ada target yang aktif</p>
                     </div>
-                    <div class="p-3 border rounded-4 bg-white text-center shadow-sm">
+                    <div class="p-3 border border-secondary rounded-4 bg-light text-center shadow-sm">
                         <small class="text-muted d-block mb-1">Status GPS</small>
-                        <p class="fw-bold mb-0 small text-primary"><i class="bi bi-geo-alt-fill"></i> Aktif & Terpantau</p>
+                        <p class="fw-bold mb-0 small" style="color: var(--accent-color);"><i class="bi bi-geo-alt-fill"></i> Aktif & Terpantau</p>
                     </div>
                 </div>
             </div>
@@ -262,7 +294,7 @@
 
     <div class="modal fade" id="targetModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-content rounded-4 border-0 shadow-lg text-dark">
                 <div class="modal-header border-0">
                     <h5 class="modal-title fw-bold">Rencana Tabungan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -280,7 +312,7 @@
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-outline-danger rounded-3 me-auto" onclick="handleClearTarget()" id="btn-clear-target" style="display: none;">Hapus Target</button>
                     <button type="button" class="btn btn-light rounded-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary rounded-3 px-4" onclick="handleSaveTarget()">Simpan</button>
+                    <button type="button" class="btn btn-primary rounded-3 px-4" onclick="handleSaveTarget()" style="background-color: var(--primary-color); border:none;">Simpan</button>
                 </div>
             </div>
         </div>
@@ -288,7 +320,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Inisialisasi awal: targetAmount diatur ke null agar defaultnya kosong
         let config = { targetAmount: null, targetTitle: "", currentBalance: 0 };
 
         function runClock() {
@@ -306,14 +337,12 @@
             const btnClear = document.getElementById('btn-clear-target');
 
             if (config.targetAmount === null || config.targetAmount <= 0) {
-                // Tampilan Kosong
                 emptyDisplaySidebar.style.display = 'block';
                 activeDisplaySidebar.style.display = 'none';
                 emptyDisplayMonitor.style.display = 'block';
                 activeDisplayMonitor.style.display = 'none';
                 btnClear.style.display = 'none';
             } else {
-                // Tampilan Aktif
                 emptyDisplaySidebar.style.display = 'none';
                 activeDisplaySidebar.style.display = 'block';
                 emptyDisplayMonitor.style.display = 'none';
@@ -359,25 +388,39 @@
             }
         }
 
-        // Dummy Chart Init
         const ctx = document.getElementById('chartSaldo').getContext('2d');
         new Chart(ctx, {
             type: 'line',
             data: {
                 labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
-                datasets: [{ label: 'Saldo', data: [0, 50000, 120000, 200000, 450000, 600000, 750000], borderColor: '#0d6efd', tension: 0.4 }]
+                datasets: [{ 
+                    label: 'Saldo', 
+                    data: [0, 50000, 120000, 200000, 450000, 600000, 750000], 
+                    borderColor: '#408A71', 
+                    backgroundColor: 'rgba(176, 228, 204, 0.1)',
+                    fill: true,
+                    tension: 0.4 
+                }]
             },
-            options: { responsive: true, maintainAspectRatio: false }
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: 'white' } }
+                },
+                scales: {
+                    y: { ticks: { color: 'rgba(255,255,255,0.5)' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { ticks: { color: 'rgba(255,255,255,0.5)' }, grid: { display: false } }
+                }
+            }
         });
 
-        // Simulasi update data berkala
         setInterval(() => {
             config.currentBalance = 750000; 
             document.getElementById('val-saldo').innerText = new Intl.NumberFormat('id-ID').format(config.currentBalance);
             updateUIProgress();
         }, 3000);
 
-        // Jalankan UI update saat pertama kali load
         updateUIProgress();
     </script>
 </body>

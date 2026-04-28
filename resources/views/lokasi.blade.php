@@ -13,27 +13,33 @@
     
     <style>
         :root { 
-            --sidebar-width: 280px; 
-            --primary-color: #0d6efd;
-            --dark-sidebar: #111827;
+            --sidebar-width: 260px;
+            --primary-color: #285A48;
+            --secondary-color: #408A71;
+            --accent-color: #B0E4CC;
+            --dark-bg: #091413;
+            --bg-body: #091413;
+            --card-bg: #121f1d;
         }
 
         body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #ffffff; 
-            color: #1f2937;
-            overflow: hidden; 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: #ffffff;
         }
 
         /* --- Sidebar --- */
         .sidebar { 
-            width: var(--sidebar-width); 
-            height: 100vh; 
-            position: fixed; 
-            background: var(--dark-sidebar); 
-            color: white; 
-            padding: 25px 20px; 
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #050a09; 
+            color: white;
+            padding: 20px;
             z-index: 1000;
+            border-right: 1px solid rgba(255,255,255,0.05);
         }
 
         .brand-logo {
@@ -48,7 +54,7 @@
         }
 
         .nav-link { 
-            color: #9ca3af; 
+            color: rgba(255, 255, 255, 0.7); 
             padding: 14px 18px; 
             border-radius: 12px; 
             margin-bottom: 8px; 
@@ -63,7 +69,7 @@
         .nav-link.active { 
             background: var(--primary-color); 
             color: white; 
-            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+            box-shadow: 0 4px 12px rgba(40, 90, 72, 0.3);
         }
 
         /* --- Main Content --- */
@@ -75,14 +81,17 @@
         }
 
         .top-bar {
-            background: white;
+            background: var(--card-bg);
             padding: 15px 30px;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 1001;
+            color: white;
         }
+
+        .text-muted { color: rgba(255,255,255,0.5) !important; }
 
         /* --- Full Map Area --- */
         #map-wrapper {
@@ -106,39 +115,39 @@
         }
 
         .btn-map-control {
-            background: white;
-            border: none;
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
             width: 45px;
             height: 45px;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
-            color: #4b5563;
+            color: #ffffff;
             transition: all 0.2s;
         }
 
         .btn-map-control:hover {
-            background: #f3f4f6;
-            color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
             transform: scale(1.05);
         }
 
         /* Pulsing Pin */
         .leaflet-pulsing-marker {
             border-radius: 50%;
-            background: var(--primary-color);
-            box-shadow: 0 0 0 rgba(13, 110, 253, 0.4);
+            background: var(--secondary-color);
+            box-shadow: 0 0 0 rgba(64, 138, 113, 0.4);
             animation: pulse 2s infinite;
             border: 2px solid white;
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(13, 110, 253, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(64, 138, 113, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(64, 138, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(64, 138, 113, 0); }
         }
 
         .status-indicator {
@@ -150,13 +159,16 @@
             align-items: center;
             gap: 8px;
         }
+        
+        .bg-success-subtle { background-color: rgba(176, 228, 204, 0.2) !important; color: var(--accent-color) !important; }
+        .bg-light { background-color: rgba(255,255,255,0.05) !important; color: rgba(255,255,255,0.5) !important; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
         <a href="/" class="brand-logo">
-            <i class="bi bi-safe2-fill text-primary"></i>
+            <i class="bi bi-safe2-fill" style="color: var(--accent-color);"></i>
             COCAINE
         </a>
         <nav class="nav flex-column">
@@ -194,7 +206,7 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Layer Peta (Google Maps Street & Satellite)
+        // Logika JS tetap sama persis seperti file asli Anda
         const streetLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
             maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: 'Google Maps'
         });
@@ -251,7 +263,6 @@
                         statusDiv.innerHTML = '<i class="bi bi-broadcast"></i> Live Tracking';
 
                         marker.setLatLng(currentCoords);
-                        // Jika marker diluar layar, geser perlahan
                         if (!map.getBounds().contains(currentCoords)) {
                             map.panTo(currentCoords);
                         }
