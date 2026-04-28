@@ -118,6 +118,22 @@
         .dropdown-header { color: var(--accent-color); }
         .dropdown-divider { border-top: 1px solid rgba(255,255,255,0.1); }
 
+        #profileModal .input-group-text {
+            border-radius: 12px 0 0 12px;
+        }
+
+        #profileModal .form-control {
+            border-radius: 0 12px 12px 0;
+        }
+
+        #profileModal .form-control::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+
+        #profileModal .form-control:focus {
+            background-color: #050a09 !important;
+        }
+
         .card { 
             background-color: var(--card-bg); 
             border: 1px solid rgba(255,255,255,0.05); 
@@ -205,7 +221,8 @@
                     </div>
                     <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2">
                         <li><h6 class="dropdown-header small">Akun: {{ Auth::user()->email }}</h6></li>
-                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-person me-2"></i> Profil</a></li>
+                        <li><a class="dropdown-item d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">
+                            <i class="bi bi-person-fill"></i> Edit Profil</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form action="{{ route('logout') }}" method="POST">
@@ -322,9 +339,60 @@
         </div>
     </div>
 
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0" style="background-color: var(--card-bg); border-radius: 20px;">
+                <div class="modal-header border-bottom border-secondary border-opacity-10">
+                    <h5 class="modal-title fw-bold text-white">Pengaturan Profil & Alat</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formUpdateProfile">
+                        <div class="mb-4">
+                            <label class="form-label small text-muted">PIN Celengan Baru (6 Digit)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-0 text-primary"><i class="bi bi-shield-lock"></i></span>
+                                <input type="password" maxlength="6" class="form-control bg-dark border-0 text-white shadow-none" placeholder="Masukkan PIN baru">
+                            </div>
+                        </div>
+
+                        <hr class="border-secondary border-opacity-10 my-4">
+
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Username Baru</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-0 text-primary"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control bg-dark border-0 text-white shadow-none" placeholder="Username baru">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small text-muted">Password Akun Baru</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-0 text-primary"><i class="bi bi-key"></i></span>
+                                <input type="password" class="form-control bg-dark border-0 text-white shadow-none" placeholder="Password baru">
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary fw-bold py-2 rounded-3">Simpan Perubahan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let config = { targetAmount: null, targetTitle: "", currentBalance: 0 };
+
+        document.getElementById('formUpdateProfile').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Kamu bisa tambahkan logic fetch API di sini
+            alert('Perubahan profil berhasil disimpan!');
+            bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
+        });
 
         document.getElementById('check-solenoid').addEventListener('change', function() {
             const statusText = document.getElementById('txt-status-alat');
