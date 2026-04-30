@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Models\ActivityLog;
+use App\Models\SecurityLog; // Diubah dari ActivityLog
 use App\Models\Device;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
@@ -16,21 +16,34 @@ class LogApiRequest
         // 1. Jalankan request ke controller dulu
         $response = $next($request);
 
-        // 2. Logging dilakukan SETELAH response didapat (Terminable Middleware style)
+        // 2. Logging dilakukan SETELAH response didapat (Post-Middleware)
         try {
-            if ($request->has('api_key')) {
-                // Cari device dengan api_key
-                $device = Device::where('api_key', $request->api_key)->first();
+            $authHeader = $request->header('Authorization');
+            $apiKey = null;
 
-                // Hanya buat log jika device ditemukan (opsional, tapi lebih aman)
-                ActivityLog::create([
-                    'device_id' => $device ? $device->id : null,
-                    'action' => $request->method() . ' ' . $request->path(),
-                    'description' => "Status: " . $response->getStatusCode() . " | IP: " . $request->ip(),
+            if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                $apiKey = $matches[1];
+            }
+
+            if (!$apiKey) {
+                $apiKey = $request->input('api_key');
+            }
+
+            // Cari device berdasarkan api_key
+            $device = Device::where('api_key', $apiKey)->first();
+
+            // LOGIKA FILTER: Hanya catat jika akses mencurigakan atau error (Security Audit)
+            if (!$device || $response->getStatusCode() >= 400) {
+                SecurityLog::create([
+                    'description' => "API Access: " . $request->method() . " " . $request->path() .
+                        " | Status: " . $response->getStatusCode() .
+                        " | IP: " . $request->ip() .
+                        " | Device: " . ($device ? $device->name : 'Unknown Device'),
+                    'severity' => $response->getStatusCode() >= 400 ? 'critical' : 'warning',
                 ]);
             }
+
         } catch (\Exception $e) {
-            // Jika logging gagal, jangan hentikan aplikasi, cukup catat di file log Laravel
             Log::error("Middleware Log Error: " . $e->getMessage());
         }
 
