@@ -153,6 +153,16 @@
             color: white;
         }
 
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
+            border-color: var(--accent-color, #B0E4CC) !important;
+            box-shadow: 0 0 0 0.25rem rgba(176, 228, 204, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.3) !important;
+        }
 
         /*DASHBOARD HOVER*/
         .dashboard-card {
@@ -337,19 +347,20 @@
 
     <div class="modal fade" id="targetModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0 shadow-lg text-dark">
+            <div class="modal-content rounded-4 border border-secondary shadow-lg bg-dark text-white">
                 <div class="modal-header border-0">
                     <h5 class="modal-title fw-bold">Rencana Tabungan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label small text-muted">Nama Rencana</label>
-                        <input type="text" id="in-target-title" class="form-control rounded-3" placeholder="Contoh: Beli Sepatu">
+                        <label class="form-label small text-secondary">Nama Rencana</label>
+                        <input type="text" id="in-target-title" class="form-control rounded-3" placeholder="Contoh: Beli Sepatu" style="border-width: 1px;">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small text-muted">Nominal Target (Rp)</label>
-                        <input type="number" id="in-target-amount" class="form-control form-control-lg rounded-3" placeholder="Masukkan angka">
+                        <label class="form-label small text-secondary">Nominal Target (Rp)</label>
+                        <input type="number" id="in-target-amount" class="form-control form-control-lg
+                            bg-transparent text-white rounded-3 border-secondary" placeholder="Masukkan angka" style="border-width: 1px;">
                     </div>
                 </div>
                 <div class="modal-footer border-0">
