@@ -15,25 +15,15 @@ class DashboardController extends Controller
      * 1. Ambil Ringkasan Saldo & Status Device
      * GET /api/dashboard/data
      */
-    public function index()
+    public function indexWeb()
     {
         // Menghitung total saldo dari semua device (atau bisa difilter per user nanti)
-        $totalSaldo = SensorData::sum('nominal');
-        $deviceActive = Device::where('status', 'online')->count();
-        $totalKoin = SensorData::where('jenis_input', 'koin')->sum('nominal');
-        $totalKertas = SensorData::where('jenis_input', 'kertas')->sum('nominal');
+        $totalSaldo = SensorData::sum('nominal') ?? 0;
+        $deviceActive = Device::where('status', 'online')->count() ?? 0;
+        $totalKoin = SensorData::where('jenis_input', 'koin')->sum('nominal') ?? 0;
+        $totalKertas = SensorData::where('jenis_input', 'kertas')->sum('nominal') ?? 0;
 
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'total_balance' => $totalSaldo,
-                'active_devices' => $deviceActive,
-                'breakdown' => [
-                    'koin' => $totalKoin,
-                    'kertas' => $totalKertas
-                ]
-            ]
-        ]);
+        return view('dashboard', compact('totalSaldo', 'deviceActive', 'totalKoin', 'totalKertas'));
     }
 
     /**

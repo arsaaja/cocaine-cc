@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +25,9 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.authenticat
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Dashboard (Hanya bisa diakses jika sudah login)
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard')->middleware('auth');
+Route::get('/dashboard', [DashboardController::class, 'indexWeb'])
+    ->name('dashboard')
+    ->middleware('auth');
 
 // Halaman Riwayat Transaksi
 Route::get('/riwayat', function () {

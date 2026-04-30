@@ -35,14 +35,24 @@
             border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .auth-icon {
-            font-size: 3rem;
-            color: var(--accent-color);
+        .auth-logo-container {
             margin-bottom: 15px;
-            display: inline-block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-logo-img {
+            max-width: 150px;
+            height: auto;
+            display: block;
         }
 
         .text-primary { color: var(--accent-color) !important; }
+
+        .auth-footer-text {
+            color: rgba(255, 255, 255, 0.7);
+        }
         
         .form-label { color: rgba(255,255,255,0.8); font-weight: 500; }
         
@@ -80,8 +90,8 @@
 <body>
     <div class="auth-card mx-auto">
         <div class="text-center mb-4">
-            <div class="auth-icon">
-                <i class="bi bi-safe2-fill"></i>
+            <div class="auth-logo-container">
+                <img src="{{ asset('images/logo/Frame 7.png') }}" alt="Logo COCAINE" class="auth-logo-img">
             </div>
             <h3 class="fw-bold text-primary">COCAINE</h3>
             <p class="auth-footer-text small">Masuk ke Dashboard Celengan Pintar</p>

@@ -44,6 +44,18 @@
             border-right: 1px solid rgba(255,255,255,0.05);
         }
 
+        .sidebar img {
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .profile-img img {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
         .main-content {
             margin-left: var(--sidebar-width);
             padding: 30px;
@@ -177,7 +189,7 @@
 
     <div class="sidebar d-flex flex-column">
         <div class="d-flex align-items-center mb-4 px-2">
-            <i class="bi bi-safe2-fill fs-3 me-2" style="color: var(--accent-color);"></i>
+            <img src="{{ asset('images/logo/Frame 7.png') }}" alt="Logo COCAINE" style="width: 40px; height: auto; margin-right: 10px;">
             <h4 class="fw-bold mb-0">COCAINE</h4>
         </div>
         <nav class="nav flex-column mb-auto">
@@ -247,21 +259,21 @@
                 <div class="card p-3">
                     <div class="stat-icon bg-primary-subtle"><i class="bi bi-wallet2"></i></div>
                     <small class="text-muted">Total Saldo</small>
-                    <h4 class="fw-bold mb-0">Rp <span id="val-saldo">0</span></h4>
+                    <h4 class="fw-bold mb-0">Rp <span id="val-saldo">{{ number_format($totalSaldo, 0, ',', '.') }}</span></h4>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card p-3">
                     <div class="stat-icon" style="background-color: var(--accent-color); color: var(--primary-color);"><i class="bi bi-coin"></i></div>
                     <small class="text-muted">Koin</small>
-                    <h4 class="fw-bold mb-0">Rp <span id="val-koin">0</span></h4>
+                    <h4 class="fw-bold mb-0">Rp <span id="val-koin">{{ number_format($totalKoin, 0, ',', '.') }}</span></h4>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card p-3">
                     <div class="stat-icon" style="background-color: rgba(255,255,255,0.1); color: white;"><i class="bi bi-cash-stack"></i></div>
                     <small class="text-muted">Uang Kertas</small>
-                    <h4 class="fw-bold mb-0">Rp <span id="val-kertas">0</span></h4>
+                    <h4 class="fw-bold mb-0">Rp <span id="val-kertas">{{ number_format($totalKertas, 0, ',', '.') }}</span></h4>
                 </div>
             </div>
             <div class="col-md-3">
@@ -501,11 +513,21 @@
             }
         });
 
-        setInterval(() => {
-            config.currentBalance = 750000; 
-            document.getElementById('val-saldo').innerText = new Intl.NumberFormat('id-ID').format(config.currentBalance);
-            updateUIProgress();
-        }, 3000);
+        function updateStats() {
+            fetch('/api/dashboard/data')
+            .then(response => response.json())
+            .then(res => {
+                const data = res.data;
+                document.getElementById('val-saldo').innerText = data.total_balance.toLocaleString('id-ID');
+                document.getElementById('val-koin').innerText = data.breakdown.koin.toLocaleString('id-ID');
+                document.getElementById('val-kertas').innerText = data.breakdown.kertas.toLocaleString('id-ID');
+            })
+            .catch(err => console.error("Gagal mengambil data:", err));
+        }
+
+        setInterval(updateStats, 5000);
+
+        updateStats();
 
         updateUIProgress();
     </script>
