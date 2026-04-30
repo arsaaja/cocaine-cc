@@ -221,7 +221,7 @@
             
             <div class="d-flex align-items-center gap-3">
                 <div class="dropdown">
-                    <div class="d-flex align-items-center gap-2 p-2 rounded-4 shadow-sm profile-card" data-bs-toggle="dropdown">
+                    <div class="d-flex align-items-center gap-2 p-3 rounded-4 shadow-sm profile-card" data-bs-toggle="dropdown">
                         <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background-color: var(--primary-color) !important;">
                             <i class="bi bi-person-fill"></i>
                         </div>
