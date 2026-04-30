@@ -8,6 +8,8 @@ use App\Models\SensorData;
 use App\Models\Device;
 use App\Models\ActivityLog;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -15,6 +17,31 @@ class DashboardController extends Controller
      * 1. Ambil Ringkasan Saldo & Status Device
      * GET /api/dashboard/data
      */
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'password' => 'nullable|string|min:8',
+        ]);
+
+        $user->username = $request->username;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Profile berhasil diperbarui',
+            'username' => $user->username
+        ]);
+    }
+
     public function indexWeb()
     {
         // Menghitung total saldo dari semua device (atau bisa difilter per user nanti)

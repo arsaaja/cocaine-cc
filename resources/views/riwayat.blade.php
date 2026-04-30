@@ -125,9 +125,10 @@
             </div>    
         
         <div class="card p-4">
+            <h5 class="fw-bold mb-4">Log Transaksi</h5>
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
-                    <thead class="table-light">
+                    <thead class="table-dark">
                         <tr>
                             <th>Waktu</th>
                             <th>Aktivitas</th>
@@ -138,6 +139,25 @@
                     <tbody id="riwayatTable">
                         <tr>
                             <td colspan="4" class="text-center text-muted">Memuat riwayat...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card p-4">
+            <h5 class="fw-bold mb-4">Log Keamanan</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Aktivitas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="riwayatTable">
+                        <tr>
+                            <td colspan="2" class="text-center text-muted">Memuat riwayat...</td>
                         </tr>
                     </tbody>
                 </table>

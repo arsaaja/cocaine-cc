@@ -29,6 +29,10 @@ Route::get('/dashboard', [DashboardController::class, 'indexWeb'])
     ->name('dashboard')
     ->middleware('auth');
 
+Route::post('/profile/update', [DashboardController::class, 'updateProfile'])
+    ->name('profile.update')
+    ->middleware('auth');
+
 // Halaman Riwayat Transaksi
 Route::get('/riwayat', function () {
     return view('riwayat');

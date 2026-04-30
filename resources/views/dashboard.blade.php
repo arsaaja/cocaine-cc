@@ -374,7 +374,8 @@
                             <label class="form-label small text-muted">Username Baru</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-dark border-0 text-primary"><i class="bi bi-person"></i></span>
-                                <input type="text" class="form-control bg-dark border-0 text-white shadow-none" placeholder="Username baru">
+                                <input type="text" id="edit-username"class="form-control bg-dark border-0 text-white shadow-none"
+                                    value="{{ Auth::user()->username }}">
                             </div>
                         </div>
 
@@ -382,7 +383,8 @@
                             <label class="form-label small text-muted">Password Akun Baru</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-dark border-0 text-primary"><i class="bi bi-key"></i></span>
-                                <input type="password" class="form-control bg-dark border-0 text-white shadow-none" placeholder="Password baru">
+                                <input type="password" id="edit-password" class="form-control bg-dark border-0 text-white shadow-none" 
+                                    placeholder="Password baru">
                             </div>
                         </div>
 
@@ -401,9 +403,37 @@
 
         document.getElementById('formUpdateProfile').addEventListener('submit', function(e) {
             e.preventDefault();
-            // Kamu bisa tambahkan logic fetch API di sini
-            alert('Perubahan profil berhasil disimpan!');
-            bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
+            
+            const username = document.getElementById('edit-username').value;
+            const password = document.getElementById('edit-password').value;
+
+            fetch("{{ route('profile.update') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                 })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message);
+                    document.querySelectorAll('.text-capitalize').forEach(el => el.innerText = data.username);
+                    document.querySelector('h4.fw-bold.mb-0').innerText = "Halo, " + data.username + "!";
+
+                    bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
+                } else {
+                    alert('Gagal menyimpan: ' + (data.message || 'Terjadi kesalahan'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Gagal terhubung ke server');
+            })
         });
 
         document.getElementById('check-solenoid').addEventListener('change', function() {
