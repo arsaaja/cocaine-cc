@@ -153,6 +153,16 @@
             color: white;
         }
 
+
+        /*DASHBOARD HOVER*/
+        .dashboard-card {
+             transition: 0.3s;
+        }
+
+        .dashboard-card:hover {
+             transform: translateY(-10px);
+        }
+
         .stat-icon {
             width: 48px; height: 48px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
@@ -256,28 +266,28 @@
 
         <div class="row g-4 mb-4">
             <div class="col-md-3">
-                <div class="card p-3">
+                <div class="card p-3 dashboard-card">
                     <div class="stat-icon bg-primary-subtle"><i class="bi bi-wallet2"></i></div>
                     <small class="text-muted">Total Saldo</small>
                     <h4 class="fw-bold mb-0">Rp <span id="val-saldo">{{ number_format($totalSaldo, 0, ',', '.') }}</span></h4>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card p-3">
+                <div class="card p-3 dashboard-card">
                     <div class="stat-icon" style="background-color: var(--accent-color); color: var(--primary-color);"><i class="bi bi-coin"></i></div>
                     <small class="text-muted">Koin</small>
                     <h4 class="fw-bold mb-0">Rp <span id="val-koin">{{ number_format($totalKoin, 0, ',', '.') }}</span></h4>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card p-3">
+                <div class="card p-3 dashboard-card">
                     <div class="stat-icon" style="background-color: rgba(255,255,255,0.1); color: white;"><i class="bi bi-cash-stack"></i></div>
                     <small class="text-muted">Uang Kertas</small>
                     <h4 class="fw-bold mb-0">Rp <span id="val-kertas">{{ number_format($totalKertas, 0, ',', '.') }}</span></h4>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card p-3">
+                <div class="card p-3 dashboard-card">
                     <div class="stat-icon" style="background-color: var(--accent-color); color: var(--primary-color);"><i class="bi bi-shield-lock"></i></div>
                     <small class="text-muted">Keamanan</small>
                     <div class="d-flex align-items-center gap-2 mt-1">
