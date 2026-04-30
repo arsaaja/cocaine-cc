@@ -36,6 +36,18 @@
             border-right: 1px solid rgba(255,255,255,0.05);
         }
 
+        .sidebar img {
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .profile-img img {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
         .nav-link { 
             color: rgba(255,255,255,0.7); 
             padding: 12px 15px; 
@@ -106,7 +118,7 @@
 <body>
     <div class="sidebar">
         <div class="d-flex align-items-center mb-4 px-2">
-            <i class="bi bi-safe2-fill text-primary fs-3 me-2"></i>
+            <img src="{{ asset('images/logo/Frame 7.png') }}" alt="Logo COCAINE" style="width: 40px; height: auto; margin-right: 10px;">
             <h4 class="fw-bold mb-0">COCAINE</h4>
         </div>
         <nav class="nav flex-column">
@@ -155,7 +167,7 @@
                             <th>Aktivitas</th>
                         </tr>
                     </thead>
-                    <tbody id="riwayatTable">
+                    <tbody id="keamananTable">
                         <tr>
                             <td colspan="2" class="text-center text-muted">Memuat riwayat...</td>
                         </tr>

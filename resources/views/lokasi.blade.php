@@ -42,6 +42,18 @@
             border-right: 1px solid rgba(255,255,255,0.05);
         }
 
+        .sidebar img {
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .profile-img img {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
         .brand-logo {
             font-size: 1.5rem;
             font-weight: 700;
@@ -168,8 +180,8 @@
 
     <div class="sidebar">
         <a href="/" class="brand-logo">
-            <i class="bi bi-safe2-fill" style="color: var(--accent-color);"></i>
-            COCAINE
+            <img src="{{ asset('images/logo/Frame 7.png') }}" alt="Logo COCAINE" style="width: 40px; height: auto; margin-right: 10px;">
+            <h4 class="fw-bold mb-0">COCAINE</h4>
         </a>
         <nav class="nav flex-column">
             <a class="nav-link" href="/dashboard"><i class="bi bi-grid-1x2"></i> Dashboard</a>
