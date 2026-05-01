@@ -12,10 +12,10 @@ return new class extends Migration {
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('activity');          // Deskripsi aktivitas
-            $table->decimal('amount', 12, 2);    // Nominal transaksi
-            $table->decimal('balance_snapshot', 12, 2); // Saldo akhir setelah transaksi
-            $table->timestamps();                // Kolom Waktu
+            $table->string('activity'); // Akan diisi: DEBIT, KREDIT, atau UANG TIDAK VALID
+            $table->decimal('amount', 12, 2);
+            $table->decimal('balance_snapshot', 12, 2); // Saldo akhir setelah aksi
+            $table->timestamps();
         });
     }
     /**

@@ -13,9 +13,9 @@ return new class extends Migration {
         // Langsung buat dengan nama security_logs
         Schema::create('security_logs', function (Blueprint $table) {
             $table->id();
-            $table->text('description'); // Untuk kolom "Aktivitas" di UI
+            $table->string('description'); // Akan diisi: SALAH PIN atau PINDAH LOKASI
             $table->enum('severity', ['warning', 'critical'])->default('warning');
-            $table->timestamps(); // Untuk kolom "Waktu" di UI
+            $table->timestamps();
         });
     }
 
