@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Models\SensorData;
-
+use App\Models\Transaction;
 class SensorDataObserver
 {
     /**

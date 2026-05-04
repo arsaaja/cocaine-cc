@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COCAINE - Real-time Location</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
+
     <style>
-        :root { 
+        :root {
             --sidebar-width: 260px;
             --primary-color: #285A48;
             --secondary-color: #408A71;
@@ -22,36 +23,25 @@
             --card-bg: #121f1d;
         }
 
-        body { 
+        body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-body);
             color: #ffffff;
+            margin: 0;
         }
 
         /* --- Sidebar --- */
-        .sidebar { 
+        .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
             position: fixed;
             left: 0;
             top: 0;
-            background: #050a09; 
+            background: #050a09;
             color: white;
             padding: 20px;
             z-index: 1000;
-            border-right: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .sidebar img {
-            border-radius: 8px;
-            object-fit: contain;
-        }
-
-        .profile-img img {
-            width: 100%;
-            height: 100%;
-            border-radius: 12px;
-            object-fit: cover;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .brand-logo {
@@ -65,12 +55,12 @@
             gap: 10px;
         }
 
-        .nav-link { 
-            color: rgba(255, 255, 255, 0.7); 
-            padding: 14px 18px; 
-            border-radius: 12px; 
-            margin-bottom: 8px; 
-            text-decoration: none; 
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -78,15 +68,15 @@
             transition: all 0.2s ease;
         }
 
-        .nav-link.active { 
-            background: var(--primary-color); 
-            color: white; 
+        .nav-link.active {
+            background: var(--primary-color);
+            color: white;
             box-shadow: 0 4px 12px rgba(40, 90, 72, 0.3);
         }
 
         /* --- Main Content --- */
-        .main-content { 
-            margin-left: var(--sidebar-width); 
+        .main-content {
+            margin-left: var(--sidebar-width);
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -95,25 +85,22 @@
         .top-bar {
             background: var(--card-bg);
             padding: 15px 30px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 1001;
-            color: white;
         }
 
-        .text-muted { color: rgba(255,255,255,0.5) !important; }
-
-        /* --- Full Map Area --- */
+        /* --- Map Area --- */
         #map-wrapper {
             flex: 1;
             position: relative;
         }
 
-        #map-canvas { 
-            height: 100%; 
-            width: 100%; 
+        #map-canvas {
+            height: 100%;
+            width: 100%;
         }
 
         .map-floating-controls {
@@ -128,38 +115,42 @@
 
         .btn-map-control {
             background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             width: 45px;
             height: 45px;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            color: #ffffff;
             transition: all 0.2s;
         }
 
         .btn-map-control:hover {
             background: var(--primary-color);
-            color: white;
             transform: scale(1.05);
         }
 
-        /* Pulsing Pin */
         .leaflet-pulsing-marker {
             border-radius: 50%;
-            background: var(--secondary-color);
-            box-shadow: 0 0 0 rgba(64, 138, 113, 0.4);
+            background: #22c55e;
+            box-shadow: 0 0 0 rgba(34, 197, 94, 0.4);
             animation: pulse 2s infinite;
             border: 2px solid white;
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(64, 138, 113, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(64, 138, 113, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(64, 138, 113, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(34, 197, 94, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
         }
 
         .status-indicator {
@@ -171,16 +162,24 @@
             align-items: center;
             gap: 8px;
         }
-        
-        .bg-success-subtle { background-color: rgba(176, 228, 204, 0.2) !important; color: var(--accent-color) !important; }
-        .bg-light { background-color: rgba(255,255,255,0.05) !important; color: rgba(255,255,255,0.5) !important; }
+
+        .bg-success-subtle {
+            background-color: rgba(34, 197, 94, 0.2) !important;
+            color: #22c55e !important;
+        }
+
+        .bg-danger-subtle {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+            color: #ef4444 !important;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="sidebar">
         <a href="/" class="brand-logo">
-            <img src="{{ asset('images/logo/Frame 7.png') }}" alt="Logo COCAINE" style="width: 40px; height: auto; margin-right: 10px;">
+            <img src="{{ asset('images/logo/Frame 7.png') }}" alt="Logo" style="width: 40px;">
             <h4 class="fw-bold mb-0">COCAINE</h4>
         </a>
         <nav class="nav flex-column">
@@ -193,13 +192,11 @@
     <div class="main-content">
         <div class="top-bar">
             <div>
-                <h5 class="fw-bold mb-0">Lokasi Alat Terkini</h5>
-                <p class="text-muted small mb-0" id="last-update">Menghubungkan ke GPS...</p>
+                <h5 class="fw-bold mb-0">Live Tracking Device</h5>
+                <p class="text-muted small mb-0" id="last-update">Menunggu data GPS...</p>
             </div>
-            <div class="d-flex align-items-center gap-3">
-                <div id="sync-status" class="status-indicator bg-light text-muted">
-                    <i class="bi bi-circle-fill" style="font-size: 8px;"></i> Standby
-                </div>
+            <div id="sync-status" class="status-indicator bg-light text-muted">
+                <i class="bi bi-circle-fill" style="font-size: 8px;"></i> Standby
             </div>
         </div>
 
@@ -218,16 +215,15 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Logika JS tetap sama persis seperti file asli Anda
         const streetLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-            maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: 'Google Maps'
+            maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3'], attribution: 'Google Maps'
         });
         const satelliteLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-            maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: 'Google Maps Imagery'
+            maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3'], attribution: 'Google Maps Imagery'
         });
 
         let map = L.map('map-canvas', {
-            center: [-6.2000, 106.8166],
+            center: [-7.9839, 112.6214], // Default Malang
             zoom: 15,
             layers: [streetLayer],
             zoomControl: false
@@ -241,7 +237,7 @@
             iconAnchor: [7, 7]
         });
 
-        let marker = L.marker([-6.2000, 106.8166], {icon: pulsingIcon}).addTo(map)
+        let marker = L.marker([-7.9839, 112.6214], { icon: pulsingIcon }).addTo(map)
             .bindPopup("<div class='text-center fw-bold'>CCNE-ESP32-01</div>");
 
         let currentCoords = null;
@@ -258,7 +254,7 @@
         }
 
         function recenterMap() {
-            if (currentCoords) map.flyTo(currentCoords, 17);
+            if (currentCoords) map.flyTo(currentCoords, 18);
         }
 
         function fetchLocation() {
@@ -266,15 +262,16 @@
             fetch('/api/latest')
                 .then(res => res.json())
                 .then(json => {
-                    const d = json.data;
-                    if (d && d.lat && d.lng) {
+                    if (json.status === 'success') {
+                        const d = json.data;
                         currentCoords = new L.LatLng(parseFloat(d.lat), parseFloat(d.lng));
-                        
-                        document.getElementById('last-update').innerText = 'Sinyal Diterima: ' + new Date().toLocaleTimeString('id-ID');
+
+                        document.getElementById('last-update').innerText = 'Update Terakhir: ' + d.updated_at;
                         statusDiv.className = 'status-indicator bg-success-subtle text-success';
                         statusDiv.innerHTML = '<i class="bi bi-broadcast"></i> Live Tracking';
 
                         marker.setLatLng(currentCoords);
+                        // Optional: Autofollow jika marker keluar layar
                         if (!map.getBounds().contains(currentCoords)) {
                             map.panTo(currentCoords);
                         }
@@ -282,12 +279,14 @@
                 })
                 .catch(err => {
                     statusDiv.className = 'status-indicator bg-danger-subtle text-danger';
-                    statusDiv.innerHTML = '<i class="bi bi-exclamation-triangle"></i> No Signal';
+                    statusDiv.innerHTML = '<i class="bi bi-exclamation-triangle"></i> GPS Offline';
                 });
         }
 
+        // Update setiap 3 detik untuk proyek Gemastik kamu
         setInterval(fetchLocation, 3000);
         fetchLocation();
     </script>
 </body>
+
 </html>

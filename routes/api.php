@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\IngestController;
 use App\Http\Controllers\Api\CommandController;
 use App\Http\Controllers\Api\WorkerController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\LocationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -34,3 +35,5 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/log', [DashboardController::class, 'logs']);
     Route::get('/chart/{device}/{type}', [DashboardController::class, 'chartData']);
 });
+
+Route::get('/latest', [LocationController::class, 'getLatestLocation']);

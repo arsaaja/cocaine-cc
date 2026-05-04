@@ -4,31 +4,28 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Transaction; // Tambahkan ini
-use App\Models\SecurityLog; // Tambahkan ini
+use App\Models\Transaction;
+use App\Models\SecurityLog;
 use App\Models\Device;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     /**
-     * 1. Ambil Ringkasan Saldo & Riwayat untuk Dashboard
+     * 1. Ambil Ringkasan untuk Dashboard (Halaman Web)
      */
     public function indexWeb()
     {
-        // Saldo diambil dari transaksi terakhir (Snapshot saldo terbaru)
+        // Saldo diambil dari snapshot terbaru di tabel transactions
         $lastTransaction = Transaction::latest()->first();
         $totalSaldo = $lastTransaction ? $lastTransaction->balance_snapshot : 0;
 
         $deviceActive = Device::where('status', 'online')->count() ?? 0;
 
-        // Filter nominal berdasarkan jenis aktivitas (DEBIT)
-        $totalKoin = Transaction::where('activity', 'DEBIT')->sum('amount') ?? 0;
-        $totalKertas = 0; // Sesuaikan jika ada logika pembeda koin/kertas di tabel transaksi
+        // PERBAIKAN: Ambil nominal dari tabel sensor_data agar bisa dibedakan koin/kertas
+        $totalKoin = DB::table('sensor_data')->where('jenis_input', 'koin')->sum('nominal') ?? 0;
+        $totalKertas = DB::table('sensor_data')->where('jenis_input', 'kertas')->sum('nominal') ?? 0;
 
-        // Ambil Data untuk Tabel Riwayat di Dashboard
         $logTransaksi = Transaction::latest()->limit(10)->get();
         $logKeamanan = SecurityLog::latest()->limit(10)->get();
 
@@ -36,12 +33,31 @@ class DashboardController extends Controller
     }
 
     /**
-     * 2. Ambil Riwayat untuk API (Halaman Riwayat image_670660.png)
-     * GET /api/dashboard/log
+     * 2. API untuk Auto-Update Dashboard (Setiap 5 Detik)
+     * Mengikuti struktur JSON di JavaScript: data.total_balance & data.breakdown
+     */
+    public function getData()
+    {
+        $lastTx = Transaction::latest()->first();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'total_balance' => $lastTx ? $lastTx->balance_snapshot : 0,
+                'breakdown' => [
+                    // Ambil dari sensor_data agar sinkron dengan jenis_input dari IngestController
+                    'koin' => DB::table('sensor_data')->where('jenis_input', 'koin')->sum('nominal') ?? 0,
+                    'kertas' => DB::table('sensor_data')->where('jenis_input', 'kertas')->sum('nominal') ?? 0,
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * 3. Ambil Riwayat untuk API
      */
     public function logs()
     {
-        // Ambil data dari tabel TRANSACTIONS
         $transactions = Transaction::latest()->limit(10)->get()->map(function ($t) {
             return [
                 'waktu' => $t->created_at->format('d M Y H:i'),
@@ -51,7 +67,6 @@ class DashboardController extends Controller
             ];
         });
 
-        // Ambil data dari tabel SECURITY_LOGS
         $security = SecurityLog::latest()->limit(10)->get()->map(function ($s) {
             return [
                 'waktu' => $s->created_at->format('d M Y H:i'),
@@ -70,12 +85,10 @@ class DashboardController extends Controller
     }
 
     /**
-     * 3. Data Grafik Tabungan
-     * GET /api/dashboard/chart
+     * 4. Data Grafik Tabungan
      */
     public function chartData()
     {
-        // Mengambil pertumbuhan saldo berdasarkan balance_snapshot terakhir setiap hari
         $chartData = Transaction::select(
             DB::raw('DATE(created_at) as date'),
             DB::raw('MAX(balance_snapshot) as total')
