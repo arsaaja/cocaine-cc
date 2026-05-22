@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CommandController;
 use App\Http\Controllers\Api\WorkerController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\LocationController;
+use App\Http\Controllers\TargetController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -37,3 +38,8 @@ Route::prefix('dashboard')->group(function () {
 });
 
 Route::get('/latest', [LocationController::class, 'getLatestLocation']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/dashboard/save-target', [TargetController::class, 'save']);
+    Route::post('/dashboard/clear-target', [TargetController::class, 'clear']);
+});

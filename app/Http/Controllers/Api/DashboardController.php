@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Models\SecurityLog;
 use App\Models\Device;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -16,40 +17,102 @@ class DashboardController extends Controller
      */
     public function indexWeb()
     {
-        // Saldo diambil dari snapshot terbaru di tabel transactions
+        // Saldo diambil dari snapshot terbaru di tabel transactions (Ledger Finansial Utama)
         $lastTransaction = Transaction::latest()->first();
         $totalSaldo = $lastTransaction ? $lastTransaction->balance_snapshot : 0;
 
         $deviceActive = Device::where('status', 'online')->count() ?? 0;
 
-        // PERBAIKAN: Ambil nominal dari tabel sensor_data agar bisa dibedakan koin/kertas
+        // Ambil nominal dari tabel sensor_data untuk breakdown statistik koin/kertas
         $totalKoin = DB::table('sensor_data')->where('jenis_input', 'koin')->sum('nominal') ?? 0;
         $totalKertas = DB::table('sensor_data')->where('jenis_input', 'kertas')->sum('nominal') ?? 0;
 
         $logTransaksi = Transaction::latest()->limit(10)->get();
         $logKeamanan = SecurityLog::latest()->limit(10)->get();
 
-        return view('dashboard', compact('totalSaldo', 'deviceActive', 'totalKoin', 'totalKertas', 'logTransaksi', 'logKeamanan'));
+        // Mengambil data target tabungan dari user yang sedang login agar saat di-refresh tidak kosong
+        $user = Auth::user();
+        $targetTitle = $user->target_title ?? '';
+        $targetAmount = $user->target_amount ?? null;
+
+        return view('dashboard', compact(
+            'totalSaldo',
+            'deviceActive',
+            'totalKoin',
+            'totalKertas',
+            'logTransaksi',
+            'logKeamanan',
+            'targetTitle',
+            'targetAmount'
+        ));
     }
 
     /**
      * 2. API untuk Auto-Update Dashboard (Setiap 5 Detik)
-     * Mengikuti struktur JSON di JavaScript: data.total_balance & data.breakdown
+     * Ditambahkan field target agar sinkronisasi progress bar berjalan real-time ketika ada transaksi masuk
      */
     public function getData()
     {
         $lastTx = Transaction::latest()->first();
+        $user = Auth::user();
 
         return response()->json([
             'status' => 'success',
             'data' => [
                 'total_balance' => $lastTx ? $lastTx->balance_snapshot : 0,
+                'target_amount' => $user ? $user->target_amount : null,
+                'target_title' => $user ? $user->target_title : '',
                 'breakdown' => [
-                    // Ambil dari sensor_data agar sinkron dengan jenis_input dari IngestController
                     'koin' => DB::table('sensor_data')->where('jenis_input', 'koin')->sum('nominal') ?? 0,
                     'kertas' => DB::table('sensor_data')->where('jenis_input', 'kertas')->sum('nominal') ?? 0,
                 ]
             ]
+        ]);
+    }
+
+    /**
+     * Baru: 5. Menyimpan/Mengubah Target Tabungan secara Permanen di DB
+     */
+    public function saveTarget(Request $request)
+    {
+        $request->validate([
+            'target_amount' => 'required|integer|min:1',
+            'target_title' => 'nullable|string|max:255'
+        ]);
+
+        // Strict Financial & System Data Integrity dengan DB::transaction
+        DB::transaction(function () use ($request) {
+            $user = Auth::user();
+            if ($user) {
+                $user->target_title = $request->target_title ?? 'Rencana Saya';
+                $user->target_amount = $request->target_amount;
+                $user->save();
+            }
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Target tabungan berhasil disimpan ke database.'
+        ]);
+    }
+
+    /**
+     * Baru: 6. Menghapus Target Tabungan di DB
+     */
+    public function clearTarget()
+    {
+        DB::transaction(function () {
+            $user = Auth::user();
+            if ($user) {
+                $user->target_title = null;
+                $user->target_amount = null;
+                $user->save();
+            }
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Target tabungan berhasil dihapus dari database.'
         ]);
     }
 

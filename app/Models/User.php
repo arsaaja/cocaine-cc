@@ -23,6 +23,8 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'target_title',  // Tambahkan ini
+        'target_amount',
     ];
 
     /**

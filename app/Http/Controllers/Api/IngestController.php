@@ -13,11 +13,17 @@ class IngestController extends Controller
 {
     private function getDeviceFromToken(Request $request)
     {
-        $token = $request->bearerToken() ?: $request->input('api_key');
-        if (!$token)
-            return null;
+        // Standar API: Mengambil token murni dari Authorization Header (Bearer Token)
+        $token = $request->bearerToken();
 
-        // Mengambil data dari tabel devices berdasarkan api_key
+        // JIKA ingin tetap mendukung fallback input api_key dari body (opsional), gunakan baris di bawah:
+        // $token = $request->bearerToken() ?: $request->input('api_key');
+
+        if (!$token) {
+            return null;
+        }
+
+        // Mengambil data dari tabel devices berdasarkan api_key yang dikirim
         return DB::table('devices')->where('api_key', $token)->first();
     }
 
@@ -26,7 +32,14 @@ class IngestController extends Controller
         $device = $this->getDeviceFromToken($request);
 
         if (!$device) {
-            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized Device'], 401);
+        }
+
+        // PERBAIKAN: Mencari user berdasarkan 'user_id' yang berada di dalam tabel 'devices'
+        $user = DB::table('users')->where('id', $device->user_id)->first();
+
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'Device not linked to any user'], 404);
         }
 
         $request->validate([
@@ -34,7 +47,7 @@ class IngestController extends Controller
             'nominal' => 'nullable|integer'
         ]);
 
-        return DB::transaction(function () use ($request, $device) {
+        return DB::transaction(function () use ($request, $device, $user) {
             $nominal = $request->nominal;
             $jenisUang = strtolower($request->jenis_input);
 
@@ -46,7 +59,7 @@ class IngestController extends Controller
                 $amountToRecord = $nominal;
             }
 
-            // Simpan ke sensor_data menggunakan $device->id (sesuai struktur tabel kamu)
+            // 1. Logika Web Dashboard breakdown boxes: Simpan data mentah ke sensor_data
             DB::table('sensor_data')->insert([
                 'device_id' => $device->id,
                 'jenis_input' => $jenisUang,
@@ -55,14 +68,15 @@ class IngestController extends Controller
                 'updated_at' => Carbon::now(),
             ]);
 
-            // Ambil saldo terakhir
-            $lastTx = Transaction::latest()->first();
+            // 2. Logika Financial Ledger Audit: Ambil snapshot saldo terakhir khusus milik user ini
+            $lastTx = Transaction::where('user_id', $user->id)->latest()->first();
             $currentBalance = $lastTx ? $lastTx->balance_snapshot : 0;
 
             $newBalance = ($status === 'DEBIT') ? ($currentBalance + $amountToRecord) : $currentBalance;
 
-            // Simpan ke tabel transactions
+            // Simpan ke tabel transactions dengan menyertakan user_id pemilik celengan
             Transaction::create([
+                'user_id' => $user->id,
                 'activity' => $status,
                 'amount' => $amountToRecord,
                 'balance_snapshot' => $newBalance,

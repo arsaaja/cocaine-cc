@@ -12,9 +12,10 @@ return new class extends Migration {
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('activity'); // Akan diisi: DEBIT, KREDIT, atau UANG TIDAK VALID
-            $table->decimal('amount', 12, 2);
-            $table->decimal('balance_snapshot', 12, 2); // Saldo akhir setelah aksi
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Menghubungkan ke tabel users
+            $table->string('activity');
+            $table->integer('amount');
+            $table->integer('balance_snapshot');
             $table->timestamps();
         });
     }

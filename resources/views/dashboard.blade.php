@@ -7,7 +7,8 @@
     <title>COCAINE - Dashboard Celengan Pintar</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -37,11 +38,12 @@
             position: fixed;
             left: 0;
             top: 0;
-            background: #050a09; /* Lebih gelap dari body */
+            background: #050a09;
+            /* Lebih gelap dari body */
             color: white;
             padding: 20px;
             z-index: 1000;
-            border-right: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .sidebar img {
@@ -69,7 +71,8 @@
             transition: all 0.3s;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             background: var(--primary-color);
             color: white;
         }
@@ -78,7 +81,7 @@
         .target-box {
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             min-height: 80px;
             display: flex;
             flex-direction: column;
@@ -96,26 +99,38 @@
             background: var(--card-bg);
             padding: 10px 20px;
             border-radius: 14px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: right;
         }
 
-        .clock-time { font-size: 20px; font-weight: 700; color: var(--accent-color); }
-        .clock-date { font-size: 12px; color: rgba(255,255,255,0.6); }
+        .clock-time {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .clock-date {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
 
         .profile-card {
             cursor: pointer;
             transition: all 0.2s;
             background-color: var(--card-bg) !important;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
         }
-        .profile-card:hover { background-color: var(--primary-color) !important; }
-        
+
+        .profile-card:hover {
+            background-color: var(--primary-color) !important;
+        }
+
         .dropdown-menu {
             background-color: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         .dropdown-item {
             color: white;
             font-size: 14px;
@@ -123,12 +138,19 @@
             margin: 0 8px;
             width: calc(100% - 16px);
         }
+
         .dropdown-item:hover {
             background-color: var(--primary-color);
             color: white;
         }
-        .dropdown-header { color: var(--accent-color); }
-        .dropdown-divider { border-top: 1px solid rgba(255,255,255,0.1); }
+
+        .dropdown-header {
+            color: var(--accent-color);
+        }
+
+        .dropdown-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
         #profileModal .input-group-text {
             border-radius: 12px 0 0 12px;
@@ -139,17 +161,17 @@
         }
 
         #profileModal .form-control::placeholder {
-            color: rgba(255,255,255,0.3);
+            color: rgba(255, 255, 255, 0.3);
         }
 
         #profileModal .form-control:focus {
             background-color: #050a09 !important;
         }
 
-        .card { 
-            background-color: var(--card-bg); 
-            border: 1px solid rgba(255,255,255,0.05); 
-            border-radius: 16px; 
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
             color: white;
         }
 
@@ -166,42 +188,94 @@
 
         /*DASHBOARD HOVER*/
         .dashboard-card {
-             transition: 0.3s;
+            transition: 0.3s;
         }
 
         .dashboard-card:hover {
-             transform: translateY(-10px);
+            transform: translateY(-10px);
         }
 
         .stat-icon {
-            width: 48px; height: 48px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; margin-bottom: 15px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
         }
 
-        .bg-primary-subtle { background-color: rgba(40, 90, 72, 0.3) !important; color: var(--accent-color) !important; }
-        .text-muted { color: rgba(255,255,255,0.5) !important; }
+        .bg-primary-subtle {
+            background-color: rgba(40, 90, 72, 0.3) !important;
+            color: var(--accent-color) !important;
+        }
+
+        .text-muted {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
 
         #txt-status-alat {
-            transition: color 0.3s ease; /* Tambahkan ini agar perubahan warna smooth */
+            transition: color 0.3s ease;
+            /* Tambahkan ini agar perubahan warna smooth */
         }
 
-        .switch { position: relative; display: inline-block; width: 45px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
         .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #333; transition: .4s; border-radius: 34px;
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            transition: .4s;
+            border-radius: 34px;
         }
-        .slider:before {
-            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
-            background-color: white; transition: .4s; border-radius: 50%;
-        }
-        input:checked + .slider { background-color: var(--secondary-color); }
-        input:checked + .slider:before { transform: translateX(21px); }
 
-        .progress { background-color: rgba(255,255,255,0.1); }
-        .progress-bar { background-color: var(--secondary-color); }
-        .bg-light { background-color: rgba(255,255,255,0.05) !important; }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--secondary-color);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(21px);
+        }
+
+        .progress {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-bar {
+            background-color: var(--secondary-color);
+        }
+
+        .bg-light {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
     </style>
 </head>
 
@@ -209,7 +283,8 @@
 
     <div class="sidebar d-flex flex-column">
         <div class="d-flex align-items-center mb-4 px-2">
-            <img src="{{ asset('images/logo/Frame 7.png') }}" alt="Logo COCAINE" style="width: 40px; height: auto; margin-right: 10px;">
+            <img src="{{ asset('images/logo/Frame 7.png') }}" alt="Logo COCAINE"
+                style="width: 40px; height: auto; margin-right: 10px;">
             <h4 class="fw-bold mb-0">COCAINE</h4>
         </div>
         <nav class="nav flex-column mb-auto">
@@ -238,11 +313,13 @@
                 <h4 class="fw-bold mb-0">Halo, {{ Auth::user()->username }}!</h4>
                 <p class="text-muted small mb-0">Pantau perkembangan tabunganmu di sini.</p>
             </div>
-            
+
             <div class="d-flex align-items-center gap-3">
                 <div class="dropdown">
-                    <div class="d-flex align-items-center gap-2 p-3 rounded-4 shadow-sm profile-card" data-bs-toggle="dropdown">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background-color: var(--primary-color) !important;">
+                    <div class="d-flex align-items-center gap-2 p-3 rounded-4 shadow-sm profile-card"
+                        data-bs-toggle="dropdown">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 38px; height: 38px; background-color: var(--primary-color) !important;">
                             <i class="bi bi-person-fill"></i>
                         </div>
                         <div class="me-2 d-none d-md-block">
@@ -252,10 +329,15 @@
                         <i class="bi bi-chevron-down small text-muted me-1"></i>
                     </div>
                     <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2">
-                        <li><h6 class="dropdown-header small">Akun: {{ Auth::user()->email }}</h6></li>
-                        <li><a class="dropdown-item d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">
-                            <i class="bi bi-person-fill"></i> Edit Profil</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <h6 class="dropdown-header small">Akun: {{ Auth::user()->email }}</h6>
+                        </li>
+                        <li><a class="dropdown-item d-flex align-items-center gap-2" href="#" data-bs-toggle="modal"
+                                data-bs-target="#profileModal">
+                                <i class="bi bi-person-fill"></i> Edit Profil</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li>
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
@@ -279,33 +361,43 @@
                 <div class="card p-3 dashboard-card">
                     <div class="stat-icon bg-primary-subtle"><i class="bi bi-wallet2"></i></div>
                     <small class="text-muted">Total Saldo</small>
-                    <h4 class="fw-bold mb-0">Rp <span id="val-saldo">{{ number_format($totalSaldo, 0, ',', '.') }}</span></h4>
+                    <h4 class="fw-bold mb-0">Rp <span id="val-saldo"
+                            data-saldo="{{ $totalSaldo ?? 0 }}">{{ number_format($totalSaldo, 0, ',', '.') }}</span>
+                    </h4>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card p-3 dashboard-card">
-                    <div class="stat-icon" style="background-color: var(--accent-color); color: var(--primary-color);"><i class="bi bi-coin"></i></div>
+                    <div class="stat-icon" style="background-color: var(--accent-color); color: var(--primary-color);">
+                        <i class="bi bi-coin"></i>
+                    </div>
                     <small class="text-muted">Koin</small>
-                    <h4 class="fw-bold mb-0">Rp <span id="val-koin">{{ number_format($totalKoin, 0, ',', '.') }}</span></h4>
+                    <h4 class="fw-bold mb-0">Rp <span id="val-koin">{{ number_format($totalKoin, 0, ',', '.') }}</span>
+                    </h4>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card p-3 dashboard-card">
-                    <div class="stat-icon" style="background-color: rgba(255,255,255,0.1); color: white;"><i class="bi bi-cash-stack"></i></div>
+                    <div class="stat-icon" style="background-color: rgba(255,255,255,0.1); color: white;"><i
+                            class="bi bi-cash-stack"></i></div>
                     <small class="text-muted">Uang Kertas</small>
-                    <h4 class="fw-bold mb-0">Rp <span id="val-kertas">{{ number_format($totalKertas, 0, ',', '.') }}</span></h4>
+                    <h4 class="fw-bold mb-0">Rp <span
+                            id="val-kertas">{{ number_format($totalKertas, 0, ',', '.') }}</span></h4>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card p-3 dashboard-card">
-                    <div class="stat-icon" style="background-color: var(--accent-color); color: var(--primary-color);"><i class="bi bi-shield-lock"></i></div>
+                    <div class="stat-icon" style="background-color: var(--accent-color); color: var(--primary-color);">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
                     <small class="text-muted">Keamanan</small>
                     <div class="d-flex align-items-center gap-2 mt-1">
                         <label class="switch">
                             <input type="checkbox" id="check-solenoid" checked>
                             <span class="slider"></span>
                         </label>
-                        <span id="txt-status-alat" class="small fw-bold" style="color: var(--accent-color);">LOCKED</span>
+                        <span id="txt-status-alat" class="small fw-bold"
+                            style="color: var(--accent-color);">LOCKED</span>
                     </div>
                 </div>
             </div>
@@ -327,18 +419,23 @@
                                 <small class="fw-bold" id="prog-label">Progres Capaian</small>
                                 <small class="fw-bold" id="prog-percent" style="color: var(--accent-color);">0%</small>
                             </div>
-                            <div class="progress" style="height: 12px; border-radius: 10px;">
-                                <div id="prog-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
+                            <div class="progress mb-2" style="height: 12px; border-radius: 10px;">
+                                <div id="prog-bar" class="progress-bar progress-bar-striped progress-bar-animated"
+                                    role="progressbar"></div>
                             </div>
+                            <small class="d-block text-muted text-center pt-1" id="prog-remaining"
+                                style="font-size: 11px;"></small>
                         </div>
                     </div>
-                    <div id="monitor-target-empty" class="text-center py-4 border border-secondary rounded-4 bg-light mb-3">
+                    <div id="monitor-target-empty"
+                        class="text-center py-4 border border-secondary rounded-4 bg-light mb-3">
                         <i class="bi bi-plus-circle text-muted fs-2"></i>
                         <p class="text-muted small mt-2">Belum ada target yang aktif</p>
                     </div>
                     <div class="p-3 border border-secondary rounded-4 bg-light text-center shadow-sm">
                         <small class="text-muted d-block mb-1">Status GPS</small>
-                        <p class="fw-bold mb-0 small" style="color: var(--accent-color);"><i class="bi bi-geo-alt-fill"></i> Aktif & Terpantau</p>
+                        <p class="fw-bold mb-0 small" style="color: var(--accent-color);"><i
+                                class="bi bi-geo-alt-fill"></i> Aktif & Terpantau</p>
                     </div>
                 </div>
             </div>
@@ -355,18 +452,22 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label small text-secondary">Nama Rencana</label>
-                        <input type="text" id="in-target-title" class="form-control rounded-3" placeholder="Contoh: Beli Sepatu" style="border-width: 1px;">
+                        <input type="text" id="in-target-title" class="form-control rounded-3"
+                            placeholder="Contoh: Beli Sepatu" style="border-width: 1px;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small text-secondary">Nominal Target (Rp)</label>
                         <input type="number" id="in-target-amount" class="form-control form-control-lg
-                            bg-transparent text-white rounded-3 border-secondary" placeholder="Masukkan angka" style="border-width: 1px;">
+                            bg-transparent text-white rounded-3 border-secondary" placeholder="Masukkan angka"
+                            style="border-width: 1px;">
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-outline-danger rounded-3 me-auto" onclick="handleClearTarget()" id="btn-clear-target" style="display: none;">Hapus Target</button>
+                    <button type="button" class="btn btn-outline-danger rounded-3 me-auto" onclick="handleClearTarget()"
+                        id="btn-clear-target" style="display: none;">Hapus Target</button>
                     <button type="button" class="btn btn-light rounded-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary rounded-3 px-4" onclick="handleSaveTarget()" style="background-color: var(--primary-color); border:none;">Simpan</button>
+                    <button type="button" class="btn btn-primary rounded-3 px-4" onclick="handleSaveTarget()"
+                        style="background-color: var(--primary-color); border:none;">Simpan</button>
                 </div>
             </div>
         </div>
@@ -377,15 +478,19 @@
             <div class="modal-content border-0" style="background-color: var(--card-bg); border-radius: 20px;">
                 <div class="modal-header border-bottom border-secondary border-opacity-10">
                     <h5 class="modal-title fw-bold text-white">Pengaturan Profil & Alat</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
                     <form id="formUpdateProfile">
                         <div class="mb-4">
                             <label class="form-label small text-muted">PIN Celengan Baru (6 Digit)</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-dark border-0 text-primary"><i class="bi bi-shield-lock"></i></span>
-                                <input type="password" maxlength="6" class="form-control bg-dark border-0 text-white shadow-none" placeholder="Masukkan PIN baru">
+                                <span class="input-group-text bg-dark border-0 text-primary"><i
+                                        class="bi bi-shield-lock"></i></span>
+                                <input type="password" maxlength="6"
+                                    class="form-control bg-dark border-0 text-white shadow-none"
+                                    placeholder="Masukkan PIN baru">
                             </div>
                         </div>
 
@@ -394,8 +499,10 @@
                         <div class="mb-3">
                             <label class="form-label small text-muted">Username Baru</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-dark border-0 text-primary"><i class="bi bi-person"></i></span>
-                                <input type="text" id="edit-username"class="form-control bg-dark border-0 text-white shadow-none"
+                                <span class="input-group-text bg-dark border-0 text-primary"><i
+                                        class="bi bi-person"></i></span>
+                                <input type="text" id="edit-username"
+                                    class="form-control bg-dark border-0 text-white shadow-none"
                                     value="{{ Auth::user()->username }}">
                             </div>
                         </div>
@@ -403,14 +510,17 @@
                         <div class="mb-4">
                             <label class="form-label small text-muted">Password Akun Baru</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-dark border-0 text-primary"><i class="bi bi-key"></i></span>
-                                <input type="password" id="edit-password" class="form-control bg-dark border-0 text-white shadow-none" 
+                                <span class="input-group-text bg-dark border-0 text-primary"><i
+                                        class="bi bi-key"></i></span>
+                                <input type="password" id="edit-password"
+                                    class="form-control bg-dark border-0 text-white shadow-none"
                                     placeholder="Password baru">
                             </div>
                         </div>
 
                         <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-primary fw-bold py-2 rounded-3">Simpan Perubahan</button>
+                            <button type="submit" class="btn btn-primary fw-bold py-2 rounded-3">Simpan
+                                Perubahan</button>
                         </div>
                     </form>
                 </div>
@@ -420,11 +530,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let config = { targetAmount: null, targetTitle: "", currentBalance: 0 };
-
-        document.getElementById('formUpdateProfile').addEventListener('submit', function(e) {
+        let config = {
+            targetAmount: Number("{{ $targetAmount }}") || null,
+            targetTitle: "{{ $targetTitle ?? '' }}",
+            currentBalance: parseInt(document.getElementById('val-saldo').getAttribute('data-saldo')) || 0
+        };
+        document.getElementById('formUpdateProfile').addEventListener('submit', function (e) {
             e.preventDefault();
-            
+
             const username = document.getElementById('edit-username').value;
             const password = document.getElementById('edit-password').value;
 
@@ -437,37 +550,37 @@
                 body: JSON.stringify({
                     username: username,
                     password: password
-                 })
+                })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert(data.message);
-                    document.querySelectorAll('.text-capitalize').forEach(el => el.innerText = data.username);
-                    document.querySelector('h4.fw-bold.mb-0').innerText = "Halo, " + data.username + "!";
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        document.querySelectorAll('.text-capitalize').forEach(el => el.innerText = data.username);
+                        document.querySelector('h4.fw-bold.mb-0').innerText = "Halo, " + data.username + "!";
 
-                    bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
-                } else {
-                    alert('Gagal menyimpan: ' + (data.message || 'Terjadi kesalahan'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Gagal terhubung ke server');
-            })
+                        bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
+                    } else {
+                        alert('Gagal menyimpan: ' + (data.message || 'Terjadi kesalahan'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Gagal terhubung ke server');
+                })
         });
 
-        document.getElementById('check-solenoid').addEventListener('change', function() {
+        document.getElementById('check-solenoid').addEventListener('change', function () {
             const statusText = document.getElementById('txt-status-alat');
-    
+
             if (this.checked) {
-            // Jika toggle ON (Terkunci)
-            statusText.innerText = 'LOCKED';
-            statusText.style.color = 'var(--accent-color)'; // Warna hijau aksen
+                // Jika toggle ON (Terkunci)
+                statusText.innerText = 'LOCKED';
+                statusText.style.color = 'var(--accent-color)'; // Warna hijau aksen
             } else {
-            // Jika toggle OFF (Terbuka)
-            statusText.innerText = 'UNLOCKED';
-            statusText.style.color = '#ff4757'; // Warna merah
+                // Jika toggle OFF (Terbuka)
+                statusText.innerText = 'UNLOCKED';
+                statusText.style.color = '#ff4757'; // Warna merah
             }
         });
 
@@ -498,12 +611,28 @@
                 activeDisplayMonitor.style.display = 'block';
                 btnClear.style.display = 'block';
 
+                // Hitung persentase capaian target
                 const percent = Math.min((config.currentBalance / config.targetAmount) * 100, 100).toFixed(1);
+
+                // Hitung estimasi sisa tabungan yang harus diperoleh
+                const remainingAmount = Math.max(config.targetAmount - config.currentBalance, 0);
+                let remainingText = "";
+
+                if (remainingAmount > 0) {
+                    remainingText = `Sisa kekurangan: <strong>Rp ${new Intl.NumberFormat('id-ID').format(remainingAmount)}</strong> lagi.`;
+                } else {
+                    remainingText = `<span class="text-success fw-bold"><i class="bi bi-check-circle-fill"></i> Target Telah Tercapai!</span>`;
+                }
+
+                // Terapkan ke DOM Elemen
                 document.getElementById('prog-bar').style.width = percent + "%";
                 document.getElementById('prog-percent').innerText = percent + "%";
                 document.getElementById('prog-label').innerText = "Progres: " + config.targetTitle;
                 document.getElementById('sidebar-target-text').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(config.targetAmount);
                 document.getElementById('sidebar-target-title').innerText = config.targetTitle;
+
+                // Pasang text sisa kekurangan di monitoring box
+                document.getElementById('prog-remaining').innerHTML = remainingText;
             }
         }
 
@@ -519,10 +648,29 @@
             const titleInput = document.getElementById('in-target-title').value;
 
             if (amountInput > 0) {
-                config.targetAmount = amountInput;
-                config.targetTitle = titleInput || "Rencana Saya";
-                updateUIProgress();
-                bootstrap.Modal.getInstance(document.getElementById('targetModal')).hide();
+                fetch("/dashboard/save-target", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        target_amount: amountInput,
+                        target_title: titleInput || "Rencana Saya"
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            config.targetAmount = amountInput;
+                            config.targetTitle = titleInput || "Rencana Saya";
+                            updateUIProgress();
+                            bootstrap.Modal.getInstance(document.getElementById('targetModal')).hide();
+                        } else {
+                            alert("Gagal menyimpan ke server.");
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
             } else {
                 alert("Masukkan nominal target yang valid!");
             }
@@ -530,10 +678,23 @@
 
         function handleClearTarget() {
             if (confirm("Apakah Anda yakin ingin menghapus target tabungan?")) {
-                config.targetAmount = null;
-                config.targetTitle = "";
-                updateUIProgress();
-                bootstrap.Modal.getInstance(document.getElementById('targetModal')).hide();
+                fetch("/dashboard/clear-target", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            config.targetAmount = null;
+                            config.targetTitle = "";
+                            updateUIProgress();
+                            bootstrap.Modal.getInstance(document.getElementById('targetModal')).hide();
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
             }
         }
 
@@ -542,17 +703,17 @@
             type: 'line',
             data: {
                 labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
-                datasets: [{ 
-                    label: 'Saldo', 
-                    data: [0, 50000, 120000, 200000, 450000, 600000, 750000], 
-                    borderColor: '#408A71', 
+                datasets: [{
+                    label: 'Saldo',
+                    data: [0, 50000, 120000, 200000, 450000, 600000, 750000],
+                    borderColor: '#408A71',
                     backgroundColor: 'rgba(176, 228, 204, 0.1)',
                     fill: true,
-                    tension: 0.4 
+                    tension: 0.4
                 }]
             },
-            options: { 
-                responsive: true, 
+            options: {
+                responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { labels: { color: 'white' } }
@@ -566,16 +727,19 @@
 
         function updateStats() {
             fetch('/api/dashboard/data')
-            .then(response => response.json())
-            .then(res => {
-                const data = res.data;
-                document.getElementById('val-saldo').innerText = data.total_balance.toLocaleString('id-ID');
-                document.getElementById('val-koin').innerText = data.breakdown.koin.toLocaleString('id-ID');
-                document.getElementById('val-kertas').innerText = data.breakdown.kertas.toLocaleString('id-ID');
-            })
-            .catch(err => console.error("Gagal mengambil data:", err));
-        }
+                .then(response => response.json())
+                .then(res => {
+                    const data = res.data;
+                    document.getElementById('val-saldo').innerText = data.total_balance.toLocaleString('id-ID');
+                    document.getElementById('val-koin').innerText = data.breakdown.koin.toLocaleString('id-ID');
+                    document.getElementById('val-kertas').innerText = data.breakdown.kertas.toLocaleString('id-ID');
 
+                    // PENTING: Update nilai balance di config secara dinamis dari API ledger finansial terbaru
+                    config.currentBalance = data.total_balance;
+                    updateUIProgress();
+                })
+                .catch(err => console.error("Gagal mengambil data:", err));
+        }
         setInterval(updateStats, 5000);
 
         updateStats();
@@ -583,4 +747,5 @@
         updateUIProgress();
     </script>
 </body>
+
 </html>
