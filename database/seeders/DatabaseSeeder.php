@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             'username' => 'Budi',
             'name' => 'Budi Gaming',
             'email' => 'budi@gmail.com',
+            'pin' => '1945',
             'password' => Hash::make('password123'),
             'target_title' => 'Beli Sepatu Baru', // Ditambahkan agar fitur target ter-seed awal
             'target_amount' => 500000,           // Target tabungan Rp 500.000
