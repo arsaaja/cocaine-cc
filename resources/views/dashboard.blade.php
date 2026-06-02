@@ -425,7 +425,7 @@
                     <div class="p-3 border border-secondary rounded-4 bg-light text-center shadow-sm">
                         <small class="text-muted d-block mb-1">Status GPS</small>
                         <p class="fw-bold mb-0 small" style="color: var(--accent-color);"><i
-                                class="bi bi-geo-alt-fill"></i> Aktif & Terpantau</p>
+                                class="bi bi-geo-alt-fill"></i> Berada dalam Zona Aman</p>
                     </div>
                 </div>
             </div>

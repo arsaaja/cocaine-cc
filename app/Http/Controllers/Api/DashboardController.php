@@ -53,23 +53,15 @@ class DashboardController extends Controller
      */
     public function getData()
     {
-        $lastTx = Transaction::latest()->first();
         $user = Auth::user();
 
-        $chartRaw = Transaction::select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('MAX(balance_snapshot) as total')
-            )
-            ->where('created_at', '>=', now()->subDays(7))
-            ->groupBy('date')
-            ->orderBy('date', 'ASC')
+        $transactions = Transaction::where('user_id', $user->id)
+            ->orderBy('created_at', 'asc') // Urutkan dari yang terlama ke terbaru agar garis mengarah ke kanan
+            ->take(20) 
             ->get();
 
-        // Format data agar bisa dibaca JavaScript (Array of Strings & Array of Numbers)
-        $chartLabels = $chartRaw->pluck('date')->map(function($date) {
-            return date('d M', strtotime($date)); // Format: 01 Jan
-        });
-        $chartValues = $chartRaw->pluck('total');
+        $lastTx = Transaction::last();
+
 
         return response()->json([
             'status' => 'success',
@@ -81,8 +73,10 @@ class DashboardController extends Controller
                     'koin' => DB::table('sensor_data')->where('jenis_input', 'koin')->sum('nominal') ?? 0,
                     'kertas' => DB::table('sensor_data')->where('jenis_input', 'kertas')->sum('nominal') ?? 0,
                 ],
-                'chart_labels' => $chartLabels,
-                'chart_data' => $chartValues,
+                'chart_labels' => $transactions->map(function($t) {
+                    return $t->created_at->format('H:i:s');
+                }),
+                'chart_data' => $transactions->pluck('balance_snapshot'),
             ]
         ]);
     }
@@ -194,7 +188,7 @@ class DashboardController extends Controller
         if ($saldoSekarang > 0) {
             DB::table('transactions')->insert([
                 'user_id'          => $userId,
-                'activity'         => 'PENARIKAN RESET',
+                'activity'         => 'RESET SALDO',
                 'amount'           => -$saldoSekarang, // Tarik semua saldo
                 'balance_snapshot' => 0,
                 'created_at'       => now(),
