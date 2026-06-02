@@ -58,6 +58,25 @@ class DashboardController extends Controller
         // 1. Ambil snapshot saldo terakhir
         $lastTx = Transaction::latest()->first();
 
+        $lastBalance = $lastTx ? $lastTx->balance_snapshot : 0;
+
+        if ($lastBalance == 0) {
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'total_balance' => 0,
+                    'target_amount' => $user->target_amount ?? null,
+                    'target_title'  => $user->target_title ?? '',
+                    'breakdown' => [
+                        'koin'   => 0,
+                        'kertas' => 0,
+                    ],
+                    'chart_labels' => [],
+                    'chart_data'   => [],
+                ]
+            ]);
+        }
+
         // 2. Ambil SEMUA riwayat transaksi saldo tertinggi per hari
         $chartTransactions = Transaction::select(
                 DB::raw('DATE(created_at) as date'),

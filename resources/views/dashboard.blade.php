@@ -746,10 +746,14 @@
                     config.currentBalance = data.total_balance;
                     updateUIProgress();
 
-                    if (data.chart_data && data.chart_labels) {
+                    if (data.chart_data && data.chart_labels && data.chart_data.length > 0) {
                         myChart.data.labels = data.chart_labels;
                         myChart.data.datasets[0].data = data.chart_data;
-                        myChart.update(); 
+                        myChart.update();
+                    } else {
+                        myChart.data.labels = [];
+                        myChart.data.datasets[0].data = [];
+                        myChart.update();
                     }
                 })
                 .catch(error => console.error('Error fetching stats:', error));
