@@ -17,20 +17,17 @@ class DashboardController extends Controller
      */
     public function indexWeb()
     {
-        // Saldo diambil dari snapshot terbaru di tabel transactions (Ledger Finansial Utama)
         $lastTransaction = Transaction::latest()->first();
         $totalSaldo = $lastTransaction ? $lastTransaction->balance_snapshot : 0;
 
         $deviceActive = Device::where('status', 'online')->count() ?? 0;
 
-        // Ambil nominal dari tabel sensor_data untuk breakdown statistik koin/kertas
         $totalKoin = DB::table('sensor_data')->where('jenis_input', 'koin')->sum('nominal') ?? 0;
         $totalKertas = DB::table('sensor_data')->where('jenis_input', 'kertas')->sum('nominal') ?? 0;
 
         $logTransaksi = Transaction::latest()->limit(10)->get();
         $logKeamanan = SecurityLog::latest()->limit(10)->get();
 
-        // Mengambil data target tabungan dari user yang sedang login agar saat di-refresh tidak kosong
         $user = Auth::user();
         $targetTitle = $user->target_title ?? '';
         $targetAmount = $user->target_amount ?? null;
@@ -49,7 +46,6 @@ class DashboardController extends Controller
 
     /**
      * 2. API untuk Auto-Update Dashboard (Setiap 5 Detik)
-     * Ditambahkan field target agar sinkronisasi progress bar berjalan real-time ketika ada transaksi masuk
      */
     public function getData()
     {
@@ -58,26 +54,7 @@ class DashboardController extends Controller
         // 1. Ambil snapshot saldo terakhir
         $lastTx = Transaction::latest()->first();
 
-        $lastBalance = $lastTx ? $lastTx->balance_snapshot : 0;
-
-        if ($lastBalance == 0) {
-            return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'total_balance' => 0,
-                    'target_amount' => $user->target_amount ?? null,
-                    'target_title'  => $user->target_title ?? '',
-                    'breakdown' => [
-                        'koin'   => 0,
-                        'kertas' => 0,
-                    ],
-                    'chart_labels' => [],
-                    'chart_data'   => [],
-                ]
-            ]);
-        }
-
-        // 2. Ambil SEMUA riwayat transaksi saldo tertinggi per hari
+        // 2. Ambil SEMUA riwayat transaksi, ambil id terbesar per hari
         $chartTransactions = Transaction::select(
                 DB::raw('DATE(created_at) as date'),
                 DB::raw('MAX(id) as max_id')
@@ -86,7 +63,7 @@ class DashboardController extends Controller
             ->orderBy('date', 'ASC')
             ->get()
             ->map(function ($row) {
-                $tx = Transaction::find($row->last_id);
+                $tx = Transaction::find($row->max_id);
                 return (object)[
                     'date'        => $row->date,
                     'max_balance' => $tx ? $tx->balance_snapshot : 0,
@@ -96,7 +73,7 @@ class DashboardController extends Controller
         $chartLabels = [];
         $chartDataValues = [];
 
-        // 3. Kalau transaksinya bener-bener kosong melompong
+        // 3. Kalau transaksinya kosong
         if ($chartTransactions->isEmpty()) {
             $chartLabels = [now()->translatedFormat('D, d M')];
             $chartDataValues = [0];
@@ -104,15 +81,21 @@ class DashboardController extends Controller
             // 4. Masukin data asli dari database
             foreach ($chartTransactions as $tx) {
                 $chartLabels[] = \Carbon\Carbon::parse($tx->date)->translatedFormat('D, d M');
-                $chartDataValues[] = (int) $tx->max_balance; 
+                $chartDataValues[] = (int) $tx->max_balance;
             }
         }
 
-        // 5. FIX CHART.JS ERROR: Selipin hari kemarin (saldo 0) kalau data baru 1
+        // 5. FIX CHART.JS ERROR: Selipin hari kemarin kalau data baru 1
         if (count($chartDataValues) == 1) {
             $kemarin = \Carbon\Carbon::parse($chartTransactions->first()->date)->subDay()->translatedFormat('D, d M');
             array_unshift($chartLabels, $kemarin);
-            array_unshift($chartDataValues, 0); 
+            array_unshift($chartDataValues, 0);
+        }
+
+        // 6. Kalau saldo terakhir 0, kosongkan chart
+        if (($lastTx ? $lastTx->balance_snapshot : 0) == 0) {
+            $chartLabels = [];
+            $chartDataValues = [];
         }
 
         return response()->json([
@@ -120,20 +103,19 @@ class DashboardController extends Controller
             'data' => [
                 'total_balance' => $lastTx ? $lastTx->balance_snapshot : 0,
                 'target_amount' => $user ? $user->target_amount : null,
-                'target_title' => $user ? $user->target_title : '',
+                'target_title'  => $user ? $user->target_title : '',
                 'breakdown' => [
-                    'koin' => DB::table('sensor_data')->where('jenis_input', 'koin')->sum('nominal') ?? 0,
+                    'koin'   => DB::table('sensor_data')->where('jenis_input', 'koin')->sum('nominal') ?? 0,
                     'kertas' => DB::table('sensor_data')->where('jenis_input', 'kertas')->sum('nominal') ?? 0,
                 ],
-                // Sekarang variabel ini ada wujudnya
                 'chart_labels' => $chartLabels,
-                'chart_data' => $chartDataValues,
+                'chart_data'   => $chartDataValues,
             ]
         ]);
     }
 
     /**
-     * Baru: 6. Menghapus Target Tabungan di DB
+     * 3. Menghapus Target Tabungan di DB
      */
     public function clearTarget()
     {
@@ -153,24 +135,24 @@ class DashboardController extends Controller
     }
 
     /**
-     * 3. Ambil Riwayat untuk API
+     * 4. Ambil Riwayat untuk API
      */
     public function logs()
     {
         $transactions = Transaction::latest()->limit(10)->get()->map(function ($t) {
             return [
-                'waktu' => $t->created_at->format('d M Y H:i'),
-                'aktivitas' => $t->activity,
-                'nominal' => number_format($t->amount, 0, ',', '.'),
+                'waktu'       => $t->created_at->format('d M Y H:i'),
+                'aktivitas'   => $t->activity,
+                'nominal'     => number_format($t->amount, 0, ',', '.'),
                 'saldo_akhir' => number_format($t->balance_snapshot, 0, ',', '.')
             ];
         });
 
         $security = SecurityLog::latest()->limit(10)->get()->map(function ($s) {
             return [
-                'waktu' => $s->created_at->format('d M Y H:i'),
+                'waktu'     => $s->created_at->format('d M Y H:i'),
                 'aktivitas' => $s->description,
-                'severity' => $s->severity
+                'severity'  => $s->severity
             ];
         });
 
@@ -178,13 +160,13 @@ class DashboardController extends Controller
             'status' => 'success',
             'data' => [
                 'transactions' => $transactions,
-                'security' => $security
+                'security'     => $security
             ]
         ]);
     }
 
     /**
-     * 4. Data Grafik Tabungan
+     * 5. Data Grafik Tabungan
      */
     public function chartData()
     {
@@ -199,39 +181,38 @@ class DashboardController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $chartData
+            'data'   => $chartData
         ]);
     }
 
+    /**
+     * 6. Reset Saldo
+     */
     public function resetSaldo()
     {
         $userId = Auth::id();
 
-        // 1. URUSAN TOTAL SALDO (Tabel transactions)
         $saldoSekarang = DB::table('transactions')->where('user_id', $userId)->sum('amount');
 
         if ($saldoSekarang > 0) {
             DB::table('transactions')->insert([
                 'user_id'          => $userId,
                 'activity'         => 'RESET SALDO',
-                'amount'           => -$saldoSekarang, // Tarik semua saldo
+                'amount'           => -$saldoSekarang,
                 'balance_snapshot' => 0,
                 'created_at'       => now(),
                 'updated_at'       => now(),
             ]);
         }
 
-        // 2. URUSAN KOIN & KERTAS (Tabel sensor_data)
-        // Cari dulu device_id yang dimiliki sama user yang lagi login
         $deviceIds = DB::table('devices')->where('user_id', $userId)->pluck('id');
-        
-        // Kalau user punya device, hapus semua riwayat koin/kertasnya
+
         if ($deviceIds->isNotEmpty()) {
             DB::table('sensor_data')->whereIn('device_id', $deviceIds)->delete();
         }
 
         return response()->json([
-            'status'  => 'success', 
+            'status'  => 'success',
             'message' => 'Total Saldo, Koin, dan Kertas berhasil di-reset!'
         ]);
     }
