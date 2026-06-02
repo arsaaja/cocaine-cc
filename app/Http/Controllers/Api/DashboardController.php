@@ -55,12 +55,40 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        $transactions = Transaction::where('user_id', $user->id)
-            ->orderBy('created_at', 'asc') // Urutkan dari yang terlama ke terbaru agar garis mengarah ke kanan
-            ->take(30) 
+        // 1. Ambil snapshot saldo terakhir
+        $lastTx = Transaction::where('user_id', $user->id)->latest()->first();
+
+        // 2. Ambil SEMUA riwayat transaksi saldo tertinggi per hari
+        $chartTransactions = Transaction::select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('MAX(balance_snapshot) as max_balance')
+            )
+            ->where('user_id', $user->id)
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
             ->get();
 
-        $lastTx = Transaction::where('user_id', $user->id)->latest()->first();
+        $chartLabels = [];
+        $chartDataValues = [];
+
+        // 3. Kalau transaksinya bener-bener kosong melompong
+        if ($chartTransactions->isEmpty()) {
+            $chartLabels = [now()->translatedFormat('D, d M')];
+            $chartDataValues = [0];
+        } else {
+            // 4. Masukin data asli dari database
+            foreach ($chartTransactions as $tx) {
+                $chartLabels[] = \Carbon\Carbon::parse($tx->date)->translatedFormat('D, d M');
+                $chartDataValues[] = (int) $tx->max_balance; 
+            }
+        }
+
+        // 5. FIX CHART.JS ERROR: Selipin hari kemarin (saldo 0) kalau data baru 1
+        if (count($chartDataValues) == 1) {
+            $kemarin = \Carbon\Carbon::parse($chartTransactions->first()->date)->subDay()->translatedFormat('D, d M');
+            array_unshift($chartLabels, $kemarin);
+            array_unshift($chartDataValues, 0); 
+        }
 
         return response()->json([
             'status' => 'success',
@@ -72,35 +100,10 @@ class DashboardController extends Controller
                     'koin' => DB::table('sensor_data')->where('jenis_input', 'koin')->sum('nominal') ?? 0,
                     'kertas' => DB::table('sensor_data')->where('jenis_input', 'kertas')->sum('nominal') ?? 0,
                 ],
+                // Sekarang variabel ini ada wujudnya
                 'chart_labels' => $chartLabels,
                 'chart_data' => $chartDataValues,
             ]
-        ]);
-    }
-
-    /**
-     * Baru: 5. Menyimpan/Mengubah Target Tabungan secara Permanen di DB
-     */
-    public function saveTarget(Request $request)
-    {
-        $request->validate([
-            'target_amount' => 'required|integer|min:1',
-            'target_title' => 'nullable|string|max:255'
-        ]);
-
-        // Strict Financial & System Data Integrity dengan DB::transaction
-        DB::transaction(function () use ($request) {
-            $user = Auth::user();
-            if ($user) {
-                $user->target_title = $request->target_title ?? 'Rencana Saya';
-                $user->target_amount = $request->target_amount;
-                $user->save();
-            }
-        });
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Target tabungan berhasil disimpan ke database.'
         ]);
     }
 
