@@ -69,7 +69,6 @@
             color: white;
         }
 
-        /* Target Box Sidebar */
         .target-box {
             cursor: pointer;
             transition: all 0.3s ease;
@@ -432,7 +431,6 @@
         </div>
     </div>
 
-    <!-- Target Modal -->
     <div class="modal fade" id="targetModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-4 border border-secondary shadow-lg bg-dark text-white">
@@ -464,7 +462,6 @@
         </div>
     </div>
 
-    <!-- Profile Modal -->
     <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0" style="background-color: var(--card-bg); border-radius: 20px;">
@@ -529,7 +526,6 @@
             currentBalance: parseInt(document.getElementById('val-saldo').getAttribute('data-saldo')) || 0
         };
 
-        // Form Update Profile
         document.getElementById('formUpdateProfile').addEventListener('submit', function (e) {
             e.preventDefault();
 
@@ -566,7 +562,6 @@
                 });
         });
 
-        // Solenoid Control Switch
         document.getElementById('check-solenoid').addEventListener('change', function () {
             const statusText = document.getElementById('txt-status-alat');
             const isChecked = this.checked;
@@ -579,7 +574,6 @@
                 statusText.style.color = '#ff4757';
             }
 
-            // Sync dengan backend API celengan
             fetch("/api/device/toggle-lock", {
                 method: 'POST',
                 headers: {
@@ -595,7 +589,6 @@
                 .catch(err => console.error("Error toggle device:", err));
         });
 
-        // Realtime Clock Function
         function runClock() {
             const now = new Date();
             document.getElementById('txt-date').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
@@ -603,7 +596,6 @@
         }
         setInterval(runClock, 1000);
 
-        // UI Progress Target Update
         function updateUIProgress() {
             const emptyDisplaySidebar = document.getElementById('target-display-empty');
             const activeDisplaySidebar = document.getElementById('target-display-active');
@@ -705,7 +697,6 @@
             }
         }
 
-        // 1. Inisialisasi cukup SEKALI di awal
         const ctx = document.getElementById('chartSaldo').getContext('2d');
         let myChart = new Chart(ctx, {
             type: 'line',
@@ -724,7 +715,7 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false, // Ini satpamnya biar grafik lu ga segede gaban
+                maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
                     y: {
@@ -755,7 +746,6 @@
                     config.currentBalance = data.total_balance;
                     updateUIProgress();
 
-                    // 3. Update datanya doang, ga usah ancur-ancurin canvas!
                     if (data.chart_data && data.chart_labels) {
                         myChart.data.labels = data.chart_labels;
                         myChart.data.datasets[0].data = data.chart_data;
@@ -765,7 +755,6 @@
                 .catch(error => console.error('Error fetching stats:', error));
         }
 
-        // 4. Timer 5 detikan
         window.addEventListener('DOMContentLoaded', () => {
             runClock();
             updateUIProgress();
