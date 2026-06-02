@@ -56,14 +56,13 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         // 1. Ambil snapshot saldo terakhir
-        $lastTx = Transaction::where('user_id', $user->id)->latest()->first();
+        $lastTx = Transaction::latest()->first();
 
         // 2. Ambil SEMUA riwayat transaksi saldo tertinggi per hari
         $chartTransactions = Transaction::select(
                 DB::raw('DATE(created_at) as date'),
                 DB::raw('MAX(balance_snapshot) as max_balance')
             )
-            ->where('user_id', $user->id)
             ->groupBy('date')
             ->orderBy('date', 'ASC')
             ->get();

@@ -31,6 +31,7 @@ Route::get('/dashboard', [DashboardController::class, 'indexWeb'])
     ->middleware('auth');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard/data-json', [DashboardController::class, 'getData']);
     Route::post('/dashboard/save-target', [TargetController::class, 'save']);
     Route::post('/dashboard/clear-target', [TargetController::class, 'clear']);
     Route::post('/api/saldo/reset', [DashboardController::class, 'resetSaldo']);
