@@ -33,6 +33,7 @@ Route::get('/dashboard', [DashboardController::class, 'indexWeb'])
 Route::middleware('auth')->group(function () {
     Route::post('/dashboard/save-target', [TargetController::class, 'save']);
     Route::post('/dashboard/clear-target', [TargetController::class, 'clear']);
+    Route::post('/api/saldo/reset', [DashboardController::class, 'resetSaldo']);
 });
 
 Route::post('/profile/update', [DashboardController::class, 'updateProfile'])

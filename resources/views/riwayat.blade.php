@@ -232,16 +232,25 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     fetch('/api/saldo/reset', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            'Content-Type': 'application/json'
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json'
+                    }
+                    })
+                    .then(response => response.json()) // Wajib diubah ke JSON dulu
+                    .then(data => {
+                        if(data.status === 'success') {
+                            Swal.fire({ title: 'Berhasil!', text: data.message, icon: 'success', background: '#121f1d', color: '#ffffff' });
+                            loadRiwayat(); // Refresh tabel di halaman riwayat
+                        } else {
+                            Swal.fire({ title: 'Gagal!', text: 'Server menolak reset.', icon: 'error', background: '#121f1d', color: '#ffffff' });
                         }
                     })
-                        .then(() => {
-                            Swal.fire({ title: 'Berhasil!', icon: 'success', background: '#121f1d', color: '#ffffff' });
-                            loadRiwayat();
-                        });
+                    .catch(error => {
+                        console.error(error);
+                        Swal.fire({ title: 'Error!', text: 'Backend belom dibikin / Error jaringan.', icon: 'error', background: '#121f1d', color: '#ffffff' });
+                    });
                 }
             });
         }

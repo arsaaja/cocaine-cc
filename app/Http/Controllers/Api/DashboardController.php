@@ -166,4 +166,27 @@ class DashboardController extends Controller
             'data' => $chartData
         ]);
     }
+
+    public function resetSaldo()
+    {
+        // Itung total saldo dari kolom 'amount'
+        $saldoSekarang = DB::table('transactions')->where('user_id', Auth::id())->sum('amount');
+
+        if ($saldoSekarang > 0) {
+            // Bikin log transaksi narik semua saldo biar totalnya jadi 0
+            DB::table('transactions')->insert([
+                'user_id'          => Auth::id(),
+                'activity'         => 'RESET',
+                'amount'           => -$saldoSekarang, // Dibikin minus
+                'balance_snapshot' => 0,               // Saldo akhir jadi 0
+                'created_at'       => now(),
+                'updated_at'       => now(),
+            ]);
+        }
+
+        return response()->json([
+            'status'  => 'success', 
+            'message' => 'Saldo berhasil di-reset jadi Rp 0'
+        ]);
+    }
 }
