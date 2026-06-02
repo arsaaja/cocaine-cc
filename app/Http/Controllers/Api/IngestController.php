@@ -24,7 +24,7 @@ class IngestController extends Controller
         }
 
         // Mengambil data dari tabel devices berdasarkan api_key yang dikirim
-        return DB::table('devices')->where('api_key', $token)->first();
+        return DB::table('devices')->first();
     }
 
     public function store(Request $request)

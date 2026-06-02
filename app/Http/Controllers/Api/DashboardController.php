@@ -169,24 +169,34 @@ class DashboardController extends Controller
 
     public function resetSaldo()
     {
-        // Itung total saldo dari kolom 'amount'
-        $saldoSekarang = DB::table('transactions')->where('user_id', Auth::id())->sum('amount');
+        $userId = Auth::id();
+
+        // 1. URUSAN TOTAL SALDO (Tabel transactions)
+        $saldoSekarang = DB::table('transactions')->where('user_id', $userId)->sum('amount');
 
         if ($saldoSekarang > 0) {
-            // Bikin log transaksi narik semua saldo biar totalnya jadi 0
             DB::table('transactions')->insert([
-                'user_id'          => Auth::id(),
-                'activity'         => 'RESET',
-                'amount'           => -$saldoSekarang, // Dibikin minus
-                'balance_snapshot' => 0,               // Saldo akhir jadi 0
+                'user_id'          => $userId,
+                'activity'         => 'PENARIKAN RESET',
+                'amount'           => -$saldoSekarang, // Tarik semua saldo
+                'balance_snapshot' => 0,
                 'created_at'       => now(),
                 'updated_at'       => now(),
             ]);
         }
 
+        // 2. URUSAN KOIN & KERTAS (Tabel sensor_data)
+        // Cari dulu device_id yang dimiliki sama user yang lagi login
+        $deviceIds = DB::table('devices')->where('user_id', $userId)->pluck('id');
+        
+        // Kalau user punya device, hapus semua riwayat koin/kertasnya
+        if ($deviceIds->isNotEmpty()) {
+            DB::table('sensor_data')->whereIn('device_id', $deviceIds)->delete();
+        }
+
         return response()->json([
             'status'  => 'success', 
-            'message' => 'Saldo berhasil di-reset jadi Rp 0'
+            'message' => 'Total Saldo, Koin, dan Kertas berhasil di-reset!'
         ]);
     }
 }
