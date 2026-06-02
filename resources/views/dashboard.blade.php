@@ -705,7 +705,7 @@
             }
         }
 
-        // Initialize Chart.js
+        // 1. Inisialisasi cukup SEKALI di awal
         const ctx = document.getElementById('chartSaldo').getContext('2d');
         let myChart = new Chart(ctx, {
             type: 'line',
@@ -724,7 +724,7 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: false, // Ini satpamnya biar grafik lu ga segede gaban
                 plugins: { legend: { display: false } },
                 scales: {
                     y: {
@@ -742,9 +742,9 @@
             }
         });
 
-        // Realtime Stats Updates from API
+        // 2. Realtime Fetcher
         function updateStats() {
-            fetch('/api/dashboard/data')
+            fetch('/dashboard/data-json')
                 .then(response => response.json())
                 .then(res => {
                     const data = res.data;
@@ -755,23 +755,23 @@
                     config.currentBalance = data.total_balance;
                     updateUIProgress();
 
+                    // 3. Update datanya doang, ga usah ancur-ancurin canvas!
                     if (data.chart_data && data.chart_labels) {
                         myChart.data.labels = data.chart_labels;
                         myChart.data.datasets[0].data = data.chart_data;
-                        myChart.update(); // FIXED: Perbaikan dari sintaks terpotong 'myChar'
+                        myChart.update(); 
                     }
                 })
                 .catch(error => console.error('Error fetching stats:', error));
         }
 
-        // Run functions immediately on load & pool every 5 seconds
+        // 4. Timer 5 detikan
         window.addEventListener('DOMContentLoaded', () => {
             runClock();
             updateUIProgress();
             updateStats();
             setInterval(updateStats, 5000);
         });
-    </script>
-</body>
-
+        </script>
+    </body>
 </html>

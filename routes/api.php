@@ -42,4 +42,5 @@ Route::get('/latest', [LocationController::class, 'getLatestLocation']);
 Route::middleware(['auth'])->group(function () {
     Route::post('/dashboard/save-target', [TargetController::class, 'save']);
     Route::post('/dashboard/clear-target', [TargetController::class, 'clear']);
+    Route::post('/saldo/reset', [DashboardController::class, 'resetSaldo']);
 });
