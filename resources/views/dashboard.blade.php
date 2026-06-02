@@ -39,7 +39,6 @@
             left: 0;
             top: 0;
             background: #050a09;
-            /* Lebih gelap dari body */
             color: white;
             padding: 20px;
             z-index: 1000;
@@ -49,13 +48,6 @@
         .sidebar img {
             border-radius: 8px;
             object-fit: contain;
-        }
-
-        .profile-img img {
-            width: 100%;
-            height: 100%;
-            border-radius: 12px;
-            object-fit: cover;
         }
 
         .main-content {
@@ -186,7 +178,6 @@
             color: rgba(255, 255, 255, 0.3) !important;
         }
 
-        /*DASHBOARD HOVER*/
         .dashboard-card {
             transition: 0.3s;
         }
@@ -217,7 +208,6 @@
 
         #txt-status-alat {
             transition: color 0.3s ease;
-            /* Tambahkan ini agar perubahan warna smooth */
         }
 
         .switch {
@@ -362,7 +352,7 @@
                     <div class="stat-icon bg-primary-subtle"><i class="bi bi-wallet2"></i></div>
                     <small class="text-muted">Total Saldo</small>
                     <h4 class="fw-bold mb-0">Rp <span id="val-saldo"
-                            data-saldo="{{ $totalSaldo ?? 0 }}">{{ number_format($totalSaldo, 0, ',', '.') }}</span>
+                            data-saldo="{{ $totalSaldo ?? 0 }}">{{ number_format($totalSaldo ?? 0, 0, ',', '.') }}</span>
                     </h4>
                 </div>
             </div>
@@ -372,8 +362,8 @@
                         <i class="bi bi-coin"></i>
                     </div>
                     <small class="text-muted">Koin</small>
-                    <h4 class="fw-bold mb-0">Rp <span id="val-koin">{{ number_format($totalKoin, 0, ',', '.') }}</span>
-                    </h4>
+                    <h4 class="fw-bold mb-0">Rp <span
+                            id="val-koin">{{ number_format($totalKoin ?? 0, 0, ',', '.') }}</span></h4>
                 </div>
             </div>
             <div class="col-md-3">
@@ -382,7 +372,7 @@
                             class="bi bi-cash-stack"></i></div>
                     <small class="text-muted">Uang Kertas</small>
                     <h4 class="fw-bold mb-0">Rp <span
-                            id="val-kertas">{{ number_format($totalKertas, 0, ',', '.') }}</span></h4>
+                            id="val-kertas">{{ number_format($totalKertas ?? 0, 0, ',', '.') }}</span></h4>
                 </div>
             </div>
             <div class="col-md-3">
@@ -442,12 +432,13 @@
         </div>
     </div>
 
+    <!-- Target Modal -->
     <div class="modal fade" id="targetModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-4 border border-secondary shadow-lg bg-dark text-white">
                 <div class="modal-header border-0">
                     <h5 class="modal-title fw-bold">Rencana Tabungan</h5>
-                    <button type="button" class="btn-close-white" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -457,9 +448,9 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label small text-secondary">Nominal Target (Rp)</label>
-                        <input type="number" id="in-target-amount" class="form-control form-control-lg
-                            bg-transparent text-white rounded-3 border-secondary" placeholder="Masukkan angka"
-                            style="border-width: 1px;">
+                        <input type="number" id="in-target-amount"
+                            class="form-control form-control-lg bg-transparent text-white rounded-3 border-secondary"
+                            placeholder="Masukkan angka" style="border-width: 1px;">
                     </div>
                 </div>
                 <div class="modal-footer border-0">
@@ -473,6 +464,7 @@
         </div>
     </div>
 
+    <!-- Profile Modal -->
     <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0" style="background-color: var(--card-bg); border-radius: 20px;">
@@ -488,7 +480,8 @@
                             <div class="input-group">
                                 <span class="input-group-text bg-dark border-0 text-primary"><i
                                         class="bi bi-shield-lock"></i></span>
-                                <input type="password" maxlength="6"
+                                <input type="password" id="edit-pin" maxlength="6" inputmode="numeric"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                     class="form-control bg-dark border-0 text-white shadow-none"
                                     placeholder="Masukkan PIN baru">
                             </div>
@@ -531,15 +524,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let config = {
-            targetAmount: Number("{{ $targetAmount }}") || null,
+            targetAmount: Number("{{ $targetAmount ?? 0 }}") || null,
             targetTitle: "{{ $targetTitle ?? '' }}",
             currentBalance: parseInt(document.getElementById('val-saldo').getAttribute('data-saldo')) || 0
         };
+
+        // Form Update Profile
         document.getElementById('formUpdateProfile').addEventListener('submit', function (e) {
             e.preventDefault();
 
             const username = document.getElementById('edit-username').value;
             const password = document.getElementById('edit-password').value;
+            const pin = document.getElementById('edit-pin').value;
 
             fetch("{{ route('profile.update') }}", {
                 method: 'POST',
@@ -549,7 +545,8 @@
                 },
                 body: JSON.stringify({
                     username: username,
-                    password: password
+                    password: password,
+                    pin: pin
                 })
             })
                 .then(response => response.json())
@@ -558,7 +555,6 @@
                         alert(data.message);
                         document.querySelectorAll('.text-capitalize').forEach(el => el.innerText = data.username);
                         document.querySelector('h4.fw-bold.mb-0').innerText = "Halo, " + data.username + "!";
-
                         bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
                     } else {
                         alert('Gagal menyimpan: ' + (data.message || 'Terjadi kesalahan'));
@@ -567,23 +563,39 @@
                 .catch(error => {
                     console.error('Error:', error);
                     alert('Gagal terhubung ke server');
-                })
+                });
         });
 
+        // Solenoid Control Switch
         document.getElementById('check-solenoid').addEventListener('change', function () {
             const statusText = document.getElementById('txt-status-alat');
+            const isChecked = this.checked;
 
-            if (this.checked) {
-                // Jika toggle ON (Terkunci)
+            if (isChecked) {
                 statusText.innerText = 'LOCKED';
-                statusText.style.color = 'var(--accent-color)'; // Warna hijau aksen
+                statusText.style.color = 'var(--accent-color)';
             } else {
-                // Jika toggle OFF (Terbuka)
                 statusText.innerText = 'UNLOCKED';
-                statusText.style.color = '#ff4757'; // Warna merah
+                statusText.style.color = '#ff4757';
             }
+
+            // Sync dengan backend API celengan
+            fetch("/api/device/toggle-lock", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ locked: isChecked })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status !== 'success') console.warn("Sinkronisasi alat gagal");
+                })
+                .catch(err => console.error("Error toggle device:", err));
         });
 
+        // Realtime Clock Function
         function runClock() {
             const now = new Date();
             document.getElementById('txt-date').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
@@ -591,6 +603,7 @@
         }
         setInterval(runClock, 1000);
 
+        // UI Progress Target Update
         function updateUIProgress() {
             const emptyDisplaySidebar = document.getElementById('target-display-empty');
             const activeDisplaySidebar = document.getElementById('target-display-active');
@@ -611,10 +624,7 @@
                 activeDisplayMonitor.style.display = 'block';
                 btnClear.style.display = 'block';
 
-                // Hitung persentase capaian target
                 const percent = Math.min((config.currentBalance / config.targetAmount) * 100, 100).toFixed(1);
-
-                // Hitung estimasi sisa tabungan yang harus diperoleh
                 const remainingAmount = Math.max(config.targetAmount - config.currentBalance, 0);
                 let remainingText = "";
 
@@ -624,14 +634,11 @@
                     remainingText = `<span class="text-success fw-bold"><i class="bi bi-check-circle-fill"></i> Target Telah Tercapai!</span>`;
                 }
 
-                // Terapkan ke DOM Elemen
                 document.getElementById('prog-bar').style.width = percent + "%";
                 document.getElementById('prog-percent').innerText = percent + "%";
                 document.getElementById('prog-label').innerText = "Progres: " + config.targetTitle;
                 document.getElementById('sidebar-target-text').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(config.targetAmount);
                 document.getElementById('sidebar-target-title').innerText = config.targetTitle;
-
-                // Pasang text sisa kekurangan di monitoring box
                 document.getElementById('prog-remaining').innerHTML = remainingText;
             }
         }
@@ -698,15 +705,15 @@
             }
         }
 
+        // Initialize Chart.js
         const ctx = document.getElementById('chartSaldo').getContext('2d');
-
         let myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: [], 
+                labels: [],
                 datasets: [{
                     label: 'Saldo (Rp)',
-                    data: [], 
+                    data: [],
                     borderColor: '#408A71',
                     backgroundColor: 'rgba(176, 228, 204, 0.1)',
                     fill: true,
@@ -718,25 +725,24 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false } 
-                },
+                plugins: { legend: { display: false } },
                 scales: {
-                    y: { 
-                        ticks: { 
+                    y: {
+                        ticks: {
                             color: 'rgba(255,255,255,0.5)',
-                            callback: function(value) { return 'Rp ' + value.toLocaleString('id-ID'); }
-                        }, 
-                        grid: { color: 'rgba(255,255,255,0.05)' } 
+                            callback: function (value) { return 'Rp ' + value.toLocaleString('id-ID'); }
+                        },
+                        grid: { color: 'rgba(255,255,255,0.05)' }
                     },
-                    x: { 
-                        ticks: { color: 'rgba(255,255,255,0.5)' }, 
-                        grid: { display: false } 
+                    x: {
+                        ticks: { color: 'rgba(255,255,255,0.5)' },
+                        grid: { display: false }
                     }
                 }
             }
         });
 
+        // Realtime Stats Updates from API
         function updateStats() {
             fetch('/api/dashboard/data')
                 .then(response => response.json())
@@ -752,28 +758,19 @@
                     if (data.chart_data && data.chart_labels) {
                         myChart.data.labels = data.chart_labels;
                         myChart.data.datasets[0].data = data.chart_data;
-                        myChart.update();
-                    } else {
-                        const now = new Date();
-                        const timeLabel = now.getHours() + ":" + now.getMinutes();
-                        
-                        myChart.data.labels.push(timeLabel);
-                        myChart.data.datasets[0].data.push(data.total_balance);
-
-                        if (myChart.data.labels.length > 7) {
-                            myChart.data.labels.shift();
-                            myChart.data.datasets[0].data.shift();
-                        }
-                        myChart.update('none');
+                        myChart.update(); // FIXED: Perbaikan dari sintaks terpotong 'myChar'
                     }
                 })
-                .catch(err => console.error("Gagal mengambil data:", err));
+                .catch(error => console.error('Error fetching stats:', error));
         }
-        setInterval(updateStats, 5000);
 
-        updateStats();
-
-        updateUIProgress();
+        // Run functions immediately on load & pool every 5 seconds
+        window.addEventListener('DOMContentLoaded', () => {
+            runClock();
+            updateUIProgress();
+            updateStats();
+            setInterval(updateStats, 5000);
+        });
     </script>
 </body>
 
