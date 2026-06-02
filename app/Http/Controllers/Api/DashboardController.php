@@ -56,6 +56,21 @@ class DashboardController extends Controller
         $lastTx = Transaction::latest()->first();
         $user = Auth::user();
 
+        $chartRaw = Transaction::select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('MAX(balance_snapshot) as total')
+            )
+            ->where('created_at', '>=', now()->subDays(7))
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->get();
+
+        // Format data agar bisa dibaca JavaScript (Array of Strings & Array of Numbers)
+        $chartLabels = $chartRaw->pluck('date')->map(function($date) {
+            return date('d M', strtotime($date)); // Format: 01 Jan
+        });
+        $chartValues = $chartRaw->pluck('total');
+
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -65,7 +80,9 @@ class DashboardController extends Controller
                 'breakdown' => [
                     'koin' => DB::table('sensor_data')->where('jenis_input', 'koin')->sum('nominal') ?? 0,
                     'kertas' => DB::table('sensor_data')->where('jenis_input', 'kertas')->sum('nominal') ?? 0,
-                ]
+                ],
+                'chart_labels' => $chartLabels,
+                'chart_data' => $chartValues,
             ]
         ]);
     }
