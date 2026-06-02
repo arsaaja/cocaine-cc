@@ -57,11 +57,10 @@ class DashboardController extends Controller
 
         $transactions = Transaction::where('user_id', $user->id)
             ->orderBy('created_at', 'asc') // Urutkan dari yang terlama ke terbaru agar garis mengarah ke kanan
-            ->take(20) 
+            ->take(30) 
             ->get();
 
-        $lastTx = Transaction::last();
-
+        $lastTx = Transaction::where('user_id', $user->id)->latest()->first();
 
         return response()->json([
             'status' => 'success',
