@@ -17,7 +17,7 @@
             --sidebar-width: 260px;
             --primary-color: #285A48;
             --secondary-color: #408A71;
-            --accent-color: #B0E4CC;
+            --accent-color: #007740;
             --dark-bg: #091413;
             --card-bg: #121f1d;
         }
@@ -72,7 +72,15 @@
         }
 
         .table {
-            color: white;
+            color: #e8f5f0; font-size: 1rem;
+        }
+
+        .table thead th {
+            color: #a8d5c2 !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            border-bottom: 2px solid rgba(64, 138, 113, 0.35) !important;
         }
 
         .table-dark {
@@ -81,22 +89,30 @@
 
         td {
             border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-            padding: 15px !important;
+            padding: 14px 16px !important;
+            color: #dff0ea;
         }
 
         .text-primary {
-            color: var(--accent-color) !important;
+            color: #3dd68c !important;
         }
 
         .badge-debit {
-            background-color: var(--primary-color);
-            color: white;
+            background-color: #1a4a38;
+            color: #3dd68c;
+            border: 1px solid #2d7a5a;
         }
 
         .badge-kredit {
-            background-color: #ff4757;
-            color: white;
+            background-color: #3d1a1a;
+            color: #ff6b7a;
+            border: 1px solid #7a2d2d;
         }
+
+        .text-danger { color: #ff6b7a !important; }
+
+        .text-warning { color: #ffc857 !important; }
+        
     </style>
 </head>
 
