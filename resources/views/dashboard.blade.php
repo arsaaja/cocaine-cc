@@ -699,28 +699,40 @@
         }
 
         const ctx = document.getElementById('chartSaldo').getContext('2d');
-        new Chart(ctx, {
+
+        let myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+                labels: [], 
                 datasets: [{
-                    label: 'Saldo',
-                    data: [0, 50000, 120000, 200000, 450000, 600000, 750000],
+                    label: 'Saldo (Rp)',
+                    data: [], 
                     borderColor: '#408A71',
                     backgroundColor: 'rgba(176, 228, 204, 0.1)',
                     fill: true,
-                    tension: 0.4
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#B0E4CC'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { labels: { color: 'white' } }
+                    legend: { display: false } 
                 },
                 scales: {
-                    y: { ticks: { color: 'rgba(255,255,255,0.5)' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                    x: { ticks: { color: 'rgba(255,255,255,0.5)' }, grid: { display: false } }
+                    y: { 
+                        ticks: { 
+                            color: 'rgba(255,255,255,0.5)',
+                            callback: function(value) { return 'Rp ' + value.toLocaleString('id-ID'); }
+                        }, 
+                        grid: { color: 'rgba(255,255,255,0.05)' } 
+                    },
+                    x: { 
+                        ticks: { color: 'rgba(255,255,255,0.5)' }, 
+                        grid: { display: false } 
+                    }
                 }
             }
         });
@@ -734,9 +746,26 @@
                     document.getElementById('val-koin').innerText = data.breakdown.koin.toLocaleString('id-ID');
                     document.getElementById('val-kertas').innerText = data.breakdown.kertas.toLocaleString('id-ID');
 
-                    // PENTING: Update nilai balance di config secara dinamis dari API ledger finansial terbaru
                     config.currentBalance = data.total_balance;
                     updateUIProgress();
+
+                    if (data.chart_data && data.chart_labels) {
+                        myChart.data.labels = data.chart_labels;
+                        myChart.data.datasets[0].data = data.chart_data;
+                        myChart.update();
+                    } else {
+                        const now = new Date();
+                        const timeLabel = now.getHours() + ":" + now.getMinutes();
+                        
+                        myChart.data.labels.push(timeLabel);
+                        myChart.data.datasets[0].data.push(data.total_balance);
+
+                        if (myChart.data.labels.length > 7) {
+                            myChart.data.labels.shift();
+                            myChart.data.datasets[0].data.shift();
+                        }
+                        myChart.update('none');
+                    }
                 })
                 .catch(err => console.error("Gagal mengambil data:", err));
         }

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\TargetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [DashboardController::class, 'indexWeb'])
     ->name('dashboard')
     ->middleware('auth');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/dashboard/save-target', [TargetController::class, 'save']);
+    Route::post('/dashboard/clear-target', [TargetController::class, 'clear']);
+});
 
 Route::post('/profile/update', [DashboardController::class, 'updateProfile'])
     ->name('profile.update')
