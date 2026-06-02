@@ -80,11 +80,18 @@ class DashboardController extends Controller
         // 2. Ambil SEMUA riwayat transaksi saldo tertinggi per hari
         $chartTransactions = Transaction::select(
                 DB::raw('DATE(created_at) as date'),
-                DB::raw('MAX(balance_snapshot) as max_balance')
+                DB::raw('MAX(id) as max_id')
             )
             ->groupBy('date')
             ->orderBy('date', 'ASC')
-            ->get();
+            ->get()
+            ->map(function ($row) {
+                $tx = Transaction::find($row->last_id);
+                return (object)[
+                    'date'        => $row->date,
+                    'max_balance' => $tx ? $tx->balance_snapshot : 0,
+                ];
+            });
 
         $chartLabels = [];
         $chartDataValues = [];
