@@ -32,7 +32,7 @@ Route::prefix('status')->group(function () {
 
 // 4. Dashboard Data 
 Route::prefix('dashboard')->group(function () {
-    Route::get('/data', [DashboardController::class, 'index']);
+    Route::get('/data', [DashboardController::class, 'GetData']);
     Route::get('/log', [DashboardController::class, 'logs']);
     Route::get('/chart/{device}/{type}', [DashboardController::class, 'chartData']);
 });
