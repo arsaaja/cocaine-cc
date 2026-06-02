@@ -74,6 +74,11 @@
             box-shadow: 0 4px 12px rgba(40, 90, 72, 0.3);
         }
 
+        .nav-link:hover {
+            background: var(--primary-color);
+            color: white !important;
+        }
+
         /* --- Main Content --- */
         .main-content {
             margin-left: var(--sidebar-width);
@@ -84,7 +89,8 @@
 
         .top-bar {
             background: var(--card-bg);
-            padding: 15px 30px;
+            margin-top: 15px;
+            padding: 20px 30px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
