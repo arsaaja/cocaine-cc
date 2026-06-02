@@ -55,40 +55,12 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
+        $transactions = Transaction::where('user_id', $user->id)
+            ->orderBy('created_at', 'asc') // Urutkan dari yang terlama ke terbaru agar garis mengarah ke kanan
+            ->take(30) 
+            ->get();
+
         $lastTx = Transaction::where('user_id', $user->id)->latest()->first();
-
-        // 1. Ambil data asli dari DB (7 hari terakhir)
-        $chartTransactions = Transaction::select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('MAX(balance_snapshot) as max_balance')
-            )
-            ->where('user_id', $user->id)
-            ->where('created_at', '>=', now()->subDays(6)) // Mulai 6 hari lalu (total 7 hari dg hari ini)
-            ->groupBy('date')
-            ->pluck('max_balance', 'date')
-            ->toArray();
-
-        $chartLabels = [];
-        $chartDataValues = [];
-        
-        // Default saldo untuk mengisi hari yang kosong (ambil dari saldo terlama kalau ada)
-        $runningBalance = 0;
-
-        // 2. Looping 7 hari ke belakang dari hari ini
-        for ($i = 6; $i >= 0; $i--) {
-            $dateKey = now()->subDays($i)->format('Y-m-d');
-            
-            // Label format: "Sen, 25 Mei"
-            $chartLabels[] = now()->subDays($i)->translatedFormat('D, d M');
-
-            // Jika di hari itu ada transaksi, update runningBalance
-            if (isset($chartTransactions[$dateKey])) {
-                $runningBalance = $chartTransactions[$dateKey];
-            }
-            
-            // Masukkan saldo ke array grafik
-            $chartDataValues[] = $runningBalance;
-        }
 
         return response()->json([
             'status' => 'success',
