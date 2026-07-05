@@ -1,6 +1,6 @@
 # CoCaIne
 
-> **Coin Cash Investment Engine** – Asisten Celengan Pintar Berbasis IoT & Dashboard Web Modern.
+> **Coin Cash Investment** – Asisten Celengan Pintar Berbasis IoT & Dashboard Web Modern.
 
 ---
 
